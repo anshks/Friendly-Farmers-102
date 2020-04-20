@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS farmerland
 (
   fid             string not null,
   lid             string not null,
-  primary key (fid, lid)
+  primary key (fid, lid),
+  foreign key (fid) references farmer (fid)
 );
 
 CREATE TABLE IF NOT EXISTS crop
@@ -62,14 +63,16 @@ CREATE TABLE IF NOT EXISTS landcrop
 (
   cid             string not null,
   lid             string not null,
-  primary key (cid, lid)
+  primary key (cid, lid),
+  foreign key (lid) references land (lid),
+  foreign key (cid) references crop (cid)
 );
 
 CREATE TABLE IF NOT EXISTS shopvendors
 (
   svid              string not null,
   svaddress         string not null,
-  authorized        boolean default false
+  authorized        boolean default false,
   primary key (svid)
 );
 
@@ -77,34 +80,31 @@ CREATE TABLE IF NOT EXISTS svcrop
 (
   svid              string not null,
   cid               string not null,
-  amount_bought     decimal not null
+  amount_bought     decimal not null,
   primary key (svid, cid)
+  foreign key (svid) references shopvendors (svid),
+  foreign key (cid) references crop (cid)
 );
 
 CREATE TABLE IF NOT EXISTS shop_inv
 (
   svid              string not null,
-  cid               string not null,
-  amount_bought     decimal not null
-  primary key (svid, cid)
+  item_name         string not null,
+  item_price        decimal not null,
+  units             decimal not null,
+  primary key (svid, cid),
+  foreign key (svid) references shopvendors (svid)
 );
-//dont know
 
 CREATE TABLE IF NOT EXISTS Storagecrop
 (
   sid               string not null,
-  cid               string not null
-  primary key (sid,cid)
+  cid               string not null,
+  primary key (sid,cid),
+  foreign key (sid) references storageprov (sid),
+  foreign key (cid) references crop (cid)
 );
 
-CREATE TABLE IF NOT EXISTS shopinv
-(
-  svid              string not null,
-  itemno            string not null,
-  itempri           string not null,
-  units             string not null 
-  primary key (svid,itemno)
-);
 
 CREATE TABLE IF NOT EXISTS transporters
 (
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS transporters
   mintwht           decimal not null,
   maxtwht           decimal not null,
   resavl            string not null,
-  authorized        boolean default false
+  authorized        boolean default false,
   primary key (tid)
 );
 
@@ -121,31 +121,39 @@ CREATE TABLE IF NOT EXISTS ftt
 (
   transid            string not null,
   fid                string not null,
-  tid                string not null
-  primary key (transid)
+  tid                string not null,
+  primary key (transid),
+  foreign key (fid) references farmer (fid),
+  foreign key (tid) references transporters (cid)
 );
 
 CREATE TABLE IF NOT EXISTS fsvt
 (
   transid            string not null,
   fid                string not null,
-  svid               string not null
-  primary key (transid)
+  svid               string not null,
+  primary key (transid),
+  foreign key (fid) references farmer (fid),
+  foreign key (svid) references shopvendors (svid)
 );
 
 CREATE TABLE IF NOT EXISTS transcrop
 (
   tid                string not null,
-  cid                string not null
-  primary key (tid,cid)
+  cid                string not null,
+  primary key (tid,cid),
+  foreign key (tid) references transporters (tid),
+  foreign key (cid) references crop (cid)
 );
 
 CREATE TABLE IF NOT EXISTS fspt
 (
   transid            string not null,
   fid                string not null,
-  spid               string not null
-  primary key (transid)
+  spid               string not null,
+  primary key (transid),
+  foreign key (fid) references farmer (fid),
+  foreign key (spid) references storageprov (spid) 
 );
 
 CREATE TABLE IF NOT EXISTS storageprov
@@ -155,15 +163,17 @@ CREATE TABLE IF NOT EXISTS storageprov
   contact            integer(10) not null,
   lat                decimal not null,
   long               decimal not null,
-  authorized         boolean default false
+  authorized         boolean default false,
   primary key (spid)
 );
 
 CREATE TABLE IF NOT EXISTS spstorage
 (
   sid                string not null,
-  spid               string not null
-  primary key (sid)
+  spid               string not null,
+  primary key (sid),
+  foreign key (sid) references storagefacloc (sid),
+  foreign key (spid) references storageprov (spid) 
 );
 
 CREATE TABLE IF NOT EXISTS trasaction
@@ -171,7 +181,7 @@ CREATE TABLE IF NOT EXISTS trasaction
   transid            string not null,
   amount             decimal not null,
   moneyspt           decimal not null,
-  stage              string not null
+  stage              string not null,
   primary key (transid)
 );
 
@@ -179,8 +189,10 @@ CREATE TABLE IF NOT EXISTS bankfloan
 (
   lid                string not null,
   bid                string not null,
-  fid                string not null
-  primary key (lid)
+  fid                string not null,
+  primary key (lid),
+  foreign key (bid) references bank (bid),
+  foreign key (fid) references farmer (fid)
 );
 
 CREATE TABLE IF NOT EXISTS loan
@@ -190,7 +202,7 @@ CREATE TABLE IF NOT EXISTS loan
   dateoffr           date not null,
   offrto             string not null,
   iniamt             decimal not null,
-  pendamt            decimal not null
+  pendamt            decimal not null,
   primary key (lid)
 );
 
@@ -205,7 +217,7 @@ CREATE TABLE IF NOT EXISTS storagefacloc
   long               decimal not null,
   typeoffarming      string not null,
   spaceleft          decimal not null,
-  availability       boolean default false
+  availability       boolean default false,
   primary key (sid)
 );
 
@@ -215,21 +227,18 @@ CREATE TABLE IF NOT EXISTS bank
   lat                decimal not null,
   long               decimal not null,
   rateoffr           decimal not null,
-  authorized         boolean default false
+  authorized         boolean default false,
   primary key (bid)
 );
 
 CREATE TABLE IF NOT EXISTS loantrans
 (
   lid                string not null,
-  transid            string not null
-  primary key (lid,transid)
+  transid            string not null,
+  primary key (lid, transid),
+  foreign key (lid) references loan (lid),
+  foreign key (transid) references trasaction (transid)
 );
-
-
-
-
-
 
 CREATE TABLE IF NOT EXISTS execution
 (
