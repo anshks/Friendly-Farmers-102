@@ -77,6 +77,13 @@ def init_db():
         insertintoloan()
         printalltables('loan')
         printalltables('trasaction')
+        insertintofarmer()
+        insertintoland()
+        printalltables('farmer')
+        printalltables('land')
+
+
+        
 
 
 
@@ -130,6 +137,15 @@ def insertintoloan():
     insert('loan', ('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'), ('L_2000', 8.00, '10-04-10', 'F_104', 50000.00, 49000.00))
     insert('loan', ('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'), ('L_2314', 9.35, '18-04-10', 'F_105', 20500.00, 20500.00))
 
+def insertintofarmer():
+    insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_102','Ramu',9997712345,'12/a kanpur',1))
+    insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_104','Sahu',9412345678,'1/12 Pauri',0))
+    insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_105','Sid',7771122333,'4A udaynagar',1))
+
+def insertintoland():
+    insert('trasaction', ('lid', 'areaocc', 'lat', 'long'), ('LD_1321',44.12,26.4499,80.3319))
+    insert('trasaction', ('lid', 'areaocc', 'lat', 'long'), ('LD_5412',12.89,29.8688,78.8383))
+    insert('trasaction', ('lid', 'areaocc', 'lat', 'long'), ('LD_3498',23.01,24.5854,73.7125))
 
 def get_avg_mark_per_degree():
     """
