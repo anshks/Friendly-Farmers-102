@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS shop_inv
   item_name         string not null,
   item_price        decimal not null,
   units             decimal not null,
-  primary key (svid, cid),
+  primary key (svid),
   foreign key (svid) references shopvendors (svid)
 );
 
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS ftt
   tid                string not null,
   primary key (transid),
   foreign key (fid) references farmer (fid),
-  foreign key (tid) references transporters (cid)
+  foreign key (tid) references transporters (tid)
 );
 
 CREATE TABLE IF NOT EXISTS fsvt
