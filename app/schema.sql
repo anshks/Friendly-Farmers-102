@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS Storagecrop
 CREATE TABLE IF NOT EXISTS transporters
 (
   tid               string not null,
+  name              string not null,
   price             decimal not null,
   mintwht           decimal not null,
   maxtwht           decimal not null,
