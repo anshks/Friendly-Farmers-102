@@ -85,8 +85,11 @@ def init_db():
         insertintoshopv()
         printalltables('crop')
         printalltables('shopvendors')
-
-
+        insertintotransporters()
+        insertintostorageprov()
+        printalltables('transporters')
+        printalltables('storageprov')
+        
 # pagination
 
 class Pagination:
@@ -156,7 +159,16 @@ def insertintocrop():
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_101','rice','kg','commercial farming',1.6,30))
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_103','cotton','kg','Extensive farming',34.2,10))
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_102','Chicken','kg','poultry farming',39.7,120))
+    
+def insertintotransporters():
+    insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_101','Hardik Kapoor',1800.00, 100, 1000, 1000, 1))
+    insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_102','Raunaq Jha',4200.00, 1000, 5000, 5000, 1))
+    insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_103','Randeep Singh',1300.00, 10, 500, 500, 0))    
 
+def inserintostorageprov():
+    insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_101', 'Madhav Thakur', 9999999999, 23.652369, 85.561211, 1))
+    insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_102', 'Rajesh Prasad', 9999999888, 22.067459, 88.137177, 1))
+    insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_103', 'Astha Malik', 9997879333, 28.561420, 77.250580, 1))
 
 def get_avg_mark_per_degree():
     """
