@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS transporters
   price             decimal not null,
   mintwht           decimal not null,
   maxtwht           decimal not null,
-  resavl            string not null,
+  resavl            decimal not null,
   authorized        boolean default false,
   primary key (tid)
 );
