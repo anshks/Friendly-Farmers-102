@@ -81,10 +81,10 @@ def init_db():
         insertintoland()
         printalltables('farmer')
         printalltables('land')
-
-
-        
-
+        insertintocrop()
+        insertintoshopv()
+        printalltables('crop')
+        printalltables('shopvendors')
 
 
 # pagination
@@ -143,9 +143,20 @@ def insertintofarmer():
     insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_105','Sid',7771122333,'4A udaynagar',1))
 
 def insertintoland():
-    insert('trasaction', ('lid', 'areaocc', 'lat', 'long'), ('LD_1321',44.12,26.4499,80.3319))
-    insert('trasaction', ('lid', 'areaocc', 'lat', 'long'), ('LD_5412',12.89,29.8688,78.8383))
-    insert('trasaction', ('lid', 'areaocc', 'lat', 'long'), ('LD_3498',23.01,24.5854,73.7125))
+    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_1321',44.12,26.4499,80.3319))
+    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_5412',12.89,29.8688,78.8383))
+    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_3498',23.01,24.5854,73.7125))
+
+def insertintoshopv():
+    insert('shopvendors', ('svid','svaddress','authorized'), ('SV_191','JLN NEW DELHI',1))
+    insert('shopvendors', ('svid','svaddress','authorized'), ('SV_192','Palika,Delhi',1))
+    insert('shopvendors', ('svid','svaddress','authorized'), ('SV_193','Srinagar J&K',0))
+
+def insertintocrop():
+    insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_101','rice','kg','commercial farming',1.6,30))
+    insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_103','cotton','kg','Extensive farming',34.2,10))
+    insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_102','Chicken','kg','poultry farming',39.7,120))
+
 
 def get_avg_mark_per_degree():
     """
