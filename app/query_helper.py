@@ -89,6 +89,12 @@ def init_db():
         insertintostorageprov()
         printalltables('transporters')
         printalltables('storageprov')
+        insertintosvcrop()
+        insertintoloantrans()
+        insertintobankfloan()
+        printalltables('svcrop')
+        printalltables('loantrans')
+        printalltables('bankfloan')
         
 # pagination
 
@@ -131,9 +137,12 @@ def printalltables(table):
     return alltables
 
 def insertintotrasaction():
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('T_101', 15000.00, 10000.00, 'Overdue'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('T_102', 120000.00, 50000.00, 'Complete'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('T_103', 100000.00,  0.00, 'Active'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_101', 15000.00, 10000.00, 'Overdue'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_102', 120000.00, 50000.00, 'Complete'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_103', 100000.00,  0.00, 'Active'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_104',100000.00,0.00,'Complete'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_105',200000.00,0.00,'Complete'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_106',300000.00,0.00,'Complete'))
 
 def insertintoloan():
     insert('loan', ('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'), ('L_1586', 10.35, '22-04-10', 'F_102', 13500.00, 11000.00))
@@ -165,10 +174,27 @@ def insertintotransporters():
     insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_102','Raunaq Jha',4200.00, 1000, 5000, 5000, 1))
     insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_103','Randeep Singh',1300.00, 10, 500, 500, 0))    
 
-def inserintostorageprov():
+def insertintostorageprov():
     insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_101', 'Madhav Thakur', 9999999999, 23.652369, 85.561211, 1))
     insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_102', 'Rajesh Prasad', 9999999888, 22.067459, 88.137177, 1))
     insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_103', 'Astha Malik', 9997879333, 28.561420, 77.250580, 1))
+
+def insertintosvcrop():
+    insert('svcrop', ('svid','cid','amount_bought'), ('C_101','SV_191',100))
+    insert('svcrop', ('svid','cid','amount_bought'), ('C_101','SV_192',232))
+    insert('svcrop', ('svid','cid','amount_bought'), ('C_102','SV_193',111))
+    insert('svcrop', ('svid','cid','amount_bought'), ('C_103','SV_192',111))
+    insert('svcrop', ('svid','cid','amount_bought'), ('C_102','SV_191',123))
+
+def insertintoloantrans():
+    insert('loantrans', ('lid','transid'), ('L_1586','TR_104'))
+    insert('loantrans', ('lid','transid'), ('L_2000','TR_105'))
+    insert('loantrans', ('lid','transid'), ('L_2314','TR_106'))
+
+def insertintobankfloan():
+    insert('bankfloan', ('lid','bid','fid'), ('L_1586','B_101','F_102'))
+    insert('bankfloan', ('lid','bid','fid'), ('L_2000','B_103','F_104'))
+    insert('bankfloan', ('lid','bid','fid'), ('L_2314','B_104','F_105'))
 
 def get_avg_mark_per_degree():
     """
