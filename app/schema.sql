@@ -5,8 +5,8 @@ DROP TABLE IF EXISTS crop;
 DROP TABLE IF EXISTS landcrop;
 DROP TABLE IF EXISTS shopvendors;
 DROP TABLE IF EXISTS svcrop;
-DROP TABLE IF EXISTS storagecrop;
-DROP TABLE IF EXISTS shopinv;
+DROP TABLE IF EXISTS Storagecrop;
+DROP TABLE IF EXISTS shop_inv;
 DROP TABLE IF EXISTS transporters;
 DROP TABLE IF EXISTS ftt;
 DROP TABLE IF EXISTS fsvt;
@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS transcrop;
 DROP TABLE IF EXISTS fspt;
 DROP TABLE IF EXISTS storageprov;
 DROP TABLE IF EXISTS spstorage;
-DROP TABLE IF EXISTS trasaction;
+DROP TABLE IF EXISTS transaction;
 DROP TABLE IF EXISTS bankfloan;
 DROP TABLE IF EXISTS loan;
 DROP TABLE IF EXISTS storagefacloc;
@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS spstorage
   foreign key (spid) references storageprov (spid) 
 );
 
-CREATE TABLE IF NOT EXISTS trasaction
+CREATE TABLE IF NOT EXISTS transaction
 (
   transid            string not null,
   amount             decimal not null,
