@@ -95,6 +95,7 @@ def init_db():
         printalltables('svcrop')
         printalltables('loantrans')
         printalltables('bankfloan')
+        insertintotranscrop()
         
 # pagination
 
@@ -195,6 +196,11 @@ def insertintobankfloan():
     insert('bankfloan', ('lid','bid','fid'), ('L_1586','B_101','F_102'))
     insert('bankfloan', ('lid','bid','fid'), ('L_2000','B_103','F_104'))
     insert('bankfloan', ('lid','bid','fid'), ('L_2314','B_104','F_105'))
+    
+def insertintotranscrop():
+    insert('transcrop', ('tid','cid'), ('T_101','C_101'))
+    insert('transcrop', ('tid','cid'), ('T_102','C_102'))
+    insert('transcrop', ('tid','cid'), ('T_103','C_103'))
 
 def get_avg_mark_per_degree():
     """
