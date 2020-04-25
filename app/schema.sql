@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS shop_inv
   item_name         string not null,
   item_price        decimal not null,
   units             decimal not null,
-  primary key (svid),
+  primary key (svid, item_name),
   foreign key (svid) references shopvendors (svid)
 );
 
