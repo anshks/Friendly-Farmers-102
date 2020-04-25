@@ -96,6 +96,9 @@ def init_db():
         printalltables('loantrans')
         printalltables('bankfloan')
         insertintotranscrop()
+        insertintoshopinv()
+        printalltables('transcrop')
+        printalltables('shop_inv')
         
 # pagination
 
@@ -201,6 +204,13 @@ def insertintotranscrop():
     insert('transcrop', ('tid','cid'), ('T_101','C_101'))
     insert('transcrop', ('tid','cid'), ('T_102','C_102'))
     insert('transcrop', ('tid','cid'), ('T_103','C_103'))
+   
+def insertintoshopinv():
+    insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_191','rice',150.00,100))
+    insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_191','Chicken',250.00,123))
+    insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_192','rice',100.00,232))
+    insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_192','cotton',80.00,111))
+    insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_193','rice',300.00,111))
 
 def get_avg_mark_per_degree():
     """
