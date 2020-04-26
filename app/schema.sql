@@ -184,8 +184,7 @@ CREATE TABLE IF NOT EXISTS transaction
 (
   transid            string not null,
   amount             decimal not null,
-  moneyspt           decimal not null,
-  stage              string not null,
+  method              string not null,
   primary key (transid)
 );
 
