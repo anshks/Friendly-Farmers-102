@@ -99,7 +99,13 @@ def init_db():
         insertintoshopinv()
         printalltables('transcrop')
         printalltables('shop_inv')
-        
+        insertintolandcrop()
+        insertintofarmerland()
+        insertintofspt()
+        printalltables('landcrop')
+        printalltables('farmerland')
+        printalltables('fspt')
+
 # pagination
 
 class Pagination:
@@ -211,6 +217,21 @@ def insertintoshopinv():
     insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_192','rice',100.00,232))
     insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_192','cotton',80.00,111))
     insert('shop_inv', ('svid','item_name','item_price','units'), ('SV_193','rice',300.00,111))
+
+def insertintolandcrop():
+    insert('landcrop', ('cid','lid'), ('C_101','LD_1321'))
+    insert('landcrop', ('cid','lid'), ('C_102','LD_5412'))
+    insert('landcrop', ('cid','lid'), ('C_103','LD_3498'))
+
+def insertintofarmerland():
+    insert('farmerland', ('fid','lid'), ('F_102','LD_1321'))
+    insert('farmerland', ('fid','lid'), ('F_104','LD_5412'))
+    insert('farmerland', ('fid','lid'), ('F_105','LD_3498'))
+
+def insertintofspt():
+    insert('fspt', ('transid','fid','spid'), ('TR_101','F_102','SP_101'))
+    insert('fspt', ('transid','fid','spid'), ('TR_102','F_104','SP_102'))
+    insert('fspt', ('transid','fid','spid'), ('TR_103','F_105','SP_103'))
 
 def get_avg_mark_per_degree():
     """
