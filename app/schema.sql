@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS farmer;
-DROP TABLE IF EXISTS land;
+DROP TABLE IF EXISTS land
 DROP TABLE IF EXISTS farmerland;
 DROP TABLE IF EXISTS crop;
 DROP TABLE IF EXISTS landcrop;
@@ -15,11 +15,12 @@ DROP TABLE IF EXISTS fspt;
 DROP TABLE IF EXISTS storageprov;
 DROP TABLE IF EXISTS spstorage;
 DROP TABLE IF EXISTS transaction;
-DROP TABLE IF EXISTS bankfloan;
+DROP TABLE IF EXISTS bankloan;
 DROP TABLE IF EXISTS loan;
 DROP TABLE IF EXISTS storagefacloc;
 DROP TABLE IF EXISTS bank;
 DROP TABLE IF EXISTS loantrans;
+
 
 CREATE TABLE IF NOT EXISTS farmer
 (
@@ -188,14 +189,13 @@ CREATE TABLE IF NOT EXISTS transaction
   primary key (transid)
 );
 
-CREATE TABLE IF NOT EXISTS bankfloan
+CREATE TABLE IF NOT EXISTS bankloan
 (
   lid                string not null,
   bid                string not null,
-  fid                string not null,
+  id                string not null,
   primary key (lid),
-  foreign key (bid) references bank (bid),
-  foreign key (fid) references farmer (fid)
+  foreign key (bid) references bank (bid)
 );
 
 CREATE TABLE IF NOT EXISTS loan
