@@ -239,6 +239,11 @@ def insertintofspt():
     insert('fspt', ('transid','fid','spid'), ('TR_101','F_102','SP_101'))
     insert('fspt', ('transid','fid','spid'), ('TR_102','F_104','SP_102'))
     insert('fspt', ('transid','fid','spid'), ('TR_103','F_105','SP_103'))
+    
+def insertintofft():
+    insert('fspt', ('transid','fid','tid'), ('TR_110','F_102','T_101'))
+    insert('fspt', ('transid','fid','tid'), ('TR_111','F_104','T_102'))
+    insert('fspt', ('transid','fid','tid'), ('TR_112','F_105','T_103'))
 
 def get_avg_mark_per_degree():
     """
