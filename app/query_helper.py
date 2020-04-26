@@ -147,12 +147,19 @@ def printalltables(table):
     return alltables
 
 def insertintotrasaction():
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_101', 15000.00, 10000.00, 'Overdue'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_102', 120000.00, 50000.00, 'Complete'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_103', 100000.00,  0.00, 'Active'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_104',100000.00,0.00,'Complete'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_105',200000.00,0.00,'Complete'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_106',300000.00,0.00,'Complete'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_101', 15000.00, 'Online'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_102', 120000.00, 'Cash'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_103', 100000.00, 'Online'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_104', 800000.00, 'Online'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_105', 200000.00, 'Cash'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_106', 100000.00, 'Online'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_107', 400000.00, 'Cash'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_108', 500000.00, 'Online'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_109', 600000.00, 'Cash'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_110', 200000.00, 'Cash'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_111', 400000.00, 'Online'))
+    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_112', 180000.00, 'Cash'))
+    
 
 def insertintoloan():
     insert('loan', ('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'), ('L_1586', 10.35, '22-04-10', 'F_102', 13500.00, 11000.00))
