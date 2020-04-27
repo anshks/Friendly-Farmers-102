@@ -80,6 +80,7 @@ def init_db():
             store= f.read()
             db.cursor().executescript(store)
         db.commit()
+        create_the_databse();
         print('\n\n> Created the database')
         print(query_db("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"), '\n')
 
@@ -87,7 +88,7 @@ def create_the_databse():
     insertintotrasaction()
     insertintoloan()
     printalltables('loan')
-    printalltables('trasaction')
+    printalltables('transactions')
     insertintofarmer()
     insertintoland()
     printalltables('farmer')
@@ -95,10 +96,10 @@ def create_the_databse():
     insertintocrop()
     insertintoshopv()
     printalltables('crop')
-    printalltables('shopvendors')
+    printalltables('shopvendor')
     insertintotransporters()
     insertintostorageprov()
-    printalltables('transporters')
+    printalltables('transporter')
     printalltables('storageprov')
     insertintosvcrop()
     insertintoloantrans()
@@ -160,18 +161,18 @@ def printalltables(table):
     return alltables
 
 def insertintotrasaction():
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_101', 15000.00, 'Online'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_102', 120000.00, 'Cash'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_103', 100000.00, 'Online'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_104', 800000.00, 'Online'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_105', 200000.00, 'Cash'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_106', 100000.00, 'Online'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_107', 400000.00, 'Cash'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_108', 500000.00, 'Online'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_109', 600000.00, 'Cash'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_110', 200000.00, 'Cash'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_111', 400000.00, 'Online'))
-    insert('trasaction', ('transid', 'amount', 'moneyspt', 'stage'), ('TR_112', 180000.00, 'Cash'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_101', 15000.00, 'Online'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_102', 120000.00, 'Cash'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_103', 100000.00, 'Online'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_104', 800000.00, 'Online'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_105', 200000.00, 'Cash'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_106', 100000.00, 'Online'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_107', 400000.00, 'Cash'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_108', 500000.00, 'Online'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_109', 600000.00, 'Cash'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_110', 200000.00, 'Cash'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_111', 400000.00, 'Online'))
+    insert('transactions', ('transid', 'amount', 'method'), ('TR_112', 180000.00, 'Cash'))
     
 
 def insertintoloan():
@@ -180,19 +181,19 @@ def insertintoloan():
     insert('loan', ('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'), ('L_2314', 9.35, '18-04-10', 'F_105', 20500.00, 20500.00))
 
 def insertintofarmer():
-    insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_102','Ramu',9997712345,'12/a kanpur',1))
-    insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_104','Sahu',9412345678,'1/12 Pauri',0))
-    insert('farmer', ('fid', 'fname', 'fcontact', 'faddress', 'authorized'), ('F_105','Sid',7771122333,'4A udaynagar',1))
+    insert('farmer', ('fid', 'fname', 'fcontact', 'authorized','lat','long'), ('F_102','Ramu',9997712345,1,28.613459,77.176208))
+    insert('farmer', ('fid', 'fname', 'fcontact', 'authorized','lat','long'), ('F_104','Sahu',9412345678,0,28.603212,77.188439))
+    insert('farmer', ('fid', 'fname', 'fcontact', 'authorized','lat','long'), ('F_105','Sid',7771122333,1,28.596580,77.181745))
 
 def insertintoland():
-    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_1321',44.12,26.4499,80.3319))
-    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_5412',12.89,29.8688,78.8383))
-    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_3498',23.01,24.5854,73.7125))
+    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_1321',44.12,28.605548,77.199597))
+    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_5412',12.89,28.603212,77.203631))
+    insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_3498',23.01,28.598238,77.207236))
 
 def insertintoshopv():
-    insert('shopvendors', ('svid','svaddress','authorized'), ('SV_191','JLN NEW DELHI',1))
-    insert('shopvendors', ('svid','svaddress','authorized'), ('SV_192','Palika,Delhi',1))
-    insert('shopvendors', ('svid','svaddress','authorized'), ('SV_193','Srinagar J&K',0))
+    insert('shopvendor', ('svid','lat','long','authorized'), ('SV_191',28.605133,77.202709,1))
+    insert('shopvendor', ('svid','lat','long','authorized'), ('SV_192',28.604116,77.204254,1))
+    insert('shopvendor', ('svid','lat','long','authorized'), ('SV_193',28.598012,77.204812,0))
 
 def insertintocrop():
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_101','rice','kg','commercial farming',1.6,30))
@@ -200,14 +201,14 @@ def insertintocrop():
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_102','Chicken','kg','poultry farming',39.7,120))
     
 def insertintotransporters():
-    insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_101','Hardik Kapoor',1800.00, 100, 1000, 1000, 1))
-    insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_102','Raunaq Jha',4200.00, 1000, 5000, 5000, 1))
-    insert('transporters', ('tid','name','price','mintwht','maxtwht','resavl','authorized'), ('T_103','Randeep Singh',1300.00, 10, 500, 500, 0))    
+    insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_101','Hardik Kapoor',1800.00, 100, 1000, 1000, 1,28.593113,77.202516))
+    insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_102','Raunaq Jha',4200.00, 1000, 5000, 5000, 1,28.593867,77.193418))
+    insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_103','Randeep Singh',1300.00, 10, 500, 500, 0,28.594018,77.198825))    
 
 def insertintostorageprov():
-    insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_101', 'Madhav Thakur', 9999999999, 23.652369, 85.561211, 1))
-    insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_102', 'Rajesh Prasad', 9999999888, 22.067459, 88.137177, 1))
-    insert('storageprov', ('spid','name','contact','lat','long','authorized'), ('SP_103', 'Astha Malik', 9997879333, 28.561420, 77.250580, 1))
+    insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_101', 'Madhav Thakur', 9999999999, 28.615268, 77.193353, 1))
+    insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_102', 'Rajesh Prasad', 9999999888, 28.615155, 77.198460, 1))
+    insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_103', 'Astha Malik', 9997879333, 28.613949, 77.202237, 1))
 
 def insertintosvcrop():
     insert('svcrop', ('svid','cid','amount_bought'), ('C_101','SV_191',100))
@@ -253,7 +254,7 @@ def insertintofspt():
     insert('fspt', ('transid','fid','spid'), ('TR_102','F_104','SP_102'))
     insert('fspt', ('transid','fid','spid'), ('TR_103','F_105','SP_103'))
     
-def insertintofft():
+def insertintoftt():
     insert('ftt', ('transid','fid','tid'), ('TR_110','F_102','T_101'))
     insert('ftt', ('transid','fid','tid'), ('TR_111','F_104','T_102'))
     insert('ftt', ('transid','fid','tid'), ('TR_112','F_105','T_103'))

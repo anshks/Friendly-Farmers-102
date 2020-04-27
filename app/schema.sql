@@ -83,8 +83,8 @@ CREATE TABLE IF NOT EXISTS storagecrop
   foreign key ( cid ) references crop ( cid )
 );
 
-DROP TABLE IF EXISTS shopinv;
-CREATE TABLE IF NOT EXISTS shopinv
+DROP TABLE IF EXISTS shop_inv;
+CREATE TABLE IF NOT EXISTS shop_inv
 (
   svid              string not null,
   item_name         string not null,
@@ -194,14 +194,15 @@ CREATE TABLE IF NOT EXISTS bank
   primary key (bid)
 );
 
-DROP TABLE IF EXISTS bankloan;
-CREATE TABLE IF NOT EXISTS bankloan
+DROP TABLE IF EXISTS bankfloan;
+CREATE TABLE IF NOT EXISTS bankfloan
 (
   lid                string not null,
   bid                string not null,
-  id                string not null,
+  fid                string not null,
   primary key (lid),
-  foreign key (bid) references bank (bid)
+  foreign key (bid) references bank (bid),
+  foreign key (fid) references farmer(fid)
 );
 
 DROP TABLE IF EXISTS loan;
