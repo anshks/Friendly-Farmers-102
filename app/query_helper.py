@@ -1,4 +1,4 @@
-import sqlite3, geopy
+import sqlite3, geopy, math
 from app import ( app )
 from flask import ( current_app, g )
 from math import ( ceil )
@@ -80,14 +80,16 @@ def init_db():
             store= f.read()
             db.cursor().executescript(store)
         db.commit()
-        create_the_databse();
         print('\n\n> Created the database')
         print(query_db("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"), '\n')
+        create_the_databse();
         check_farmer()
         check_banks()
-        check_transporters()
+        check_transporter()
         check_authorities()
         check_shopvendor()
+
+
 def create_the_databse():
     insertintotrasaction()
     insertintoloan()
@@ -101,7 +103,7 @@ def create_the_databse():
     insertintoshopv()
     printalltables('crop')
     printalltables('shopvendor')
-    insertintotransporters()
+    insertintotransporter()
     insertintostorageprov()
     printalltables('transporter')
     printalltables('storageprov')
@@ -204,7 +206,7 @@ def insertintocrop():
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_103','cotton','kg','Extensive farming',34.2,10))
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_102','Chicken','kg','poultry farming',39.7,120))
     
-def insertintotransporters():
+def insertintotransporter():
     insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_101','Hardik Kapoor',1800.00, 100, 1000, 1000, 1,28.593113,77.202516))
     insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_102','Raunaq Jha',4200.00, 1000, 5000, 5000, 1,28.593867,77.193418))
     insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_103','Randeep Singh',1300.00, 10, 500, 500, 0,28.594018,77.198825))    
@@ -374,41 +376,90 @@ def check_banks():
     print("done")
 
 def trans_check_auth_req(TID):
-    s = ("select authorized from transporters as T where  T.tid ='{}'").format(TID)
+    s = ("select authorized from transporter as T where  T.tid ='{}'").format(TID)
     result = query_db(
         s
         )
     return result
 def trans_prices_offer(weight):
-    s = ("select tid,Price*{} from (SELECT tid,Price from transporters where mintwht <= {} and maxtwht >= {})").format(weight,weight,weight)
+    s = ("select tid,Price*{} from (SELECT tid,Price from transporter where mintwht <= {} and maxtwht >= {})").format(weight,weight,weight)
     result = query_db(
         s
         )
     return result
-def trans_resources_left():
-    return
-def trans_dist():
-    return
+def trans_resources_left(tname):
+    s = ("select SUM(resavl) from transporter as A where A.tname='{}'").format(tname)
+    result = query_db(
+        s
+        )
+    return result
+def return_latlong_fromid(id= ''):
+    try:
+        if id.find('F_')!=-1:
+            s = ("select A.lat, A.long from farmer as A where A.fid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+        elif id.find('LD_')!=-1:
+            s = ("select A.lat, A.long from land as A where A.lid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+        elif id.find('SV_')!=-1:
+            s = ("select A.lat, A.long from shopvendor as A where A.svid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+        elif id.find('SP_')!=-1:
+            s = ("select A.lat, A.long from storageprov as A where A.spid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+    except Exception as e:
+        print(e)
+        return (0, 0)
+
+def trans_dist(idA= '', idB= ''):
+    origin1= return_latlong_fromid(idA)
+    origin1= origin1[0]
+    print('Origin 1 is: ', origin1)
+    origin2= return_latlong_fromid(idB)
+    origin2= origin2[0]
+    print('Origin 2 is: ', origin2)
+    R = 6.3781*(10**6)
+    lat1, lat2, lon1, lon2= origin1[0], origin2[0], origin1[1], origin2[1]
+    φ1 = lat1 * math.pi/180
+    φ2 = lat2 * math.pi/180
+    Δφ = (lat2-lat1) * math.pi/180
+    Δλ = (lon2-lon1) * math.pi/180
+    a = math.sin(Δφ/2) * math.sin(Δφ/2) + math.cos(φ1) * math.cos(φ2) * math.sin(Δλ/2) * math.sin(Δλ/2); 
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = R*c
+    return d
 def trans_res_wieght_transport(TID):
-    s = ("select maxtwht from transporters as A where A.tid='{}'").format(TID)
+    s = ("select maxtwht from transporter as A where A.tid='{}'").format(TID)
     result = query_db(
         s
         )
     return result
-def check_transporters():
-    print("transporters check a")
+def check_transporter():
+    print("transporter check a")
     print(trans_check_auth_req("T_101"))
     print("done")
-    print("transporters check b")
+    print("transporter check b")
     print(trans_prices_offer(20))
     print("done")
     print("transporter check c")
-    print(trans_resources_left())
+    print(trans_resources_left('Raunaq Jha'))
     print("done")
-    print("transporter check d")
-    print(trans_dist())
+    print("transporter check d -> distance in meteres")
+    print(trans_dist('F_104', 'F_102'))
     print("done")
-    print("transporters check e")
+    print("transporter check e")
     print(trans_res_wieght_transport("T_101"))
     print("done")
 
@@ -456,7 +507,7 @@ def auth_number_non_auth_units():
     ans += count_nonauth("storageprov")
     return ans;
 def auth_no_pend_auth():
-    s = "select  count(authorized) from (select authorized from shopvendors union all select authorized from storageprov union all select authorized from transporters) where authorized=0"
+    s = "select  count(authorized) from (select authorized from shopvendors union all select authorized from storageprov union all select authorized from transporter) where authorized=0"
     res = query_db(s)
     return res;
 def auth_total_inc_trans():

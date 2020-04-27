@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS ftt
   tid                string not null,
   primary key (transid),
   foreign key (fid) references farmer (fid),
-  foreign key (tid) references transporters (tid)
+  foreign key (tid) references transporter (tid)
 );
 
 DROP TABLE IF EXISTS fsvt;
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS transcrop
   tid                string not null,
   cid                string not null,
   primary key (tid,cid),
-  foreign key (tid) references transporters (tid),
+  foreign key (tid) references transporter (tid),
   foreign key (cid) references crop (cid)
 );
 
