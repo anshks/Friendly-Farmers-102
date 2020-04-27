@@ -8,22 +8,22 @@ import numpy as np
 
 nom = Nominatim()
 
-def barGraph(X, Y, xLabel, yLabel):
+def barGraph(X, Y, xLabel, yLabel,name):
     # X, Y -> list, xLabel,yLabel -> string
     plt.bar(X, Y, align='center', alpha=0.5)
     plt.xticks(X)
     plt.ylabel(xLabel)
     plt.title(yLabel)
-    plt.savefig("testBar.png")
+    plt.savefig(name + "_bar.png")
     plt.close()
 
-def pieChart(labels, sizes):
+def pieChart(labels, sizes,name):
     # labels, sizes -> list
     patches, texts = plt.pie(sizes)
     plt.legend(patches, labels, loc="best")
     plt.axis('equal')
     plt.tight_layout()
-    plt.savefig("testPie.png")
+    plt.savefig(name + "_pie.png")
     plt.close()
 def address_to_latlong(address):
 	result = nom.geocode(address)
@@ -653,7 +653,7 @@ def getresult(s):
     return query_db(s)
 
 
-def shop_provider_auth():
+def storage_provider_auth():
     s = ("select count(*) from storageprov where authorized=0")
     result = getresult(s)
     l = [0,0]
@@ -661,7 +661,7 @@ def shop_provider_auth():
     s = ("select count(*) from storageprov  where authorized=1")
     result = getresult(s)
     l[1] = result[0][0]
-    pieChart(["authorized","not_authorized"],l)
+    pieChart(["authorized","not_authorized"],l,"storageprovider")
     return l
 def shopvendor_auth():
     s = ("select count(*) from shopvendor where authorized=0")
@@ -672,7 +672,7 @@ def shopvendor_auth():
     result = getresult(s)
     l[1] = result[0][0]
     total = l[0] + l[1]
-    pieChart(["authorized","unauthorized"],l)
+    pieChart(["authorized","unauthorized"],l,"shopvendor")
     return l
 def crop_sum():
     s = ("select cname from crop")
@@ -688,7 +688,7 @@ def crop_sum():
     for i in ret:
         Xs.append(i[0])
         Ys[0].append(i[1])
-    barGraph(Xs,Ys,"Crop_name","quantity_sum")
+    barGraph(Xs,Ys,"Crop_name","quantity_sum","crop_quantity")
     return ret
 def crop_price(index):
     s = ("select cname from crop")
@@ -728,7 +728,7 @@ def crop_price(index):
         ylabel = "mean"
     else:
         ylabel = "variance"
-    barGraph(Xs,Ys[index],"bid",ylabel)
+    barGraph(Xs,Ys[index],"bid",ylabel,"crop_price_" + ylabel)
     return ret
 def bank_rateofff(index):
     s = ("select bid from bank")
@@ -770,5 +770,5 @@ def bank_rateofff(index):
         ylabel = "mean"
     else:
         ylabel = "variance"
-    barGraph(Xs,Ys[index],"bid",ylabel)
+    barGraph(Xs,Ys[index],"bid",ylabel,"bank_rateoff_" + ylabel)
     return ret
