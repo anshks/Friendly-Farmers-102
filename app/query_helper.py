@@ -662,7 +662,7 @@ def storage_provider_auth():
     result = getresult(s)
     l[1] = result[0][0]
     pieChart(["authorized","not_authorized"],l,"storageprovider")
-    return l
+    return "storage_provider_auth.png"
 def shopvendor_auth():
     s = ("select count(*) from shopvendor where authorized=0")
     result = getresult(s)
@@ -672,8 +672,8 @@ def shopvendor_auth():
     result = getresult(s)
     l[1] = result[0][0]
     total = l[0] + l[1]
-    pieChart(["authorized","unauthorized"],l,"shopvendor")
-    return l
+    pieChart(["authorized","unauthorized"],l,"shopvendor,auth")
+    return "shopvendor_auth.png"
 def crop_sum():
     s = ("select cname from crop")
     res = getresult(s)
@@ -689,7 +689,7 @@ def crop_sum():
         Xs.append(i[0])
         Ys[0].append(i[1])
     barGraph(Xs,Ys,"Crop_name","quantity_sum","crop_quantity")
-    return ret
+    return "crop_quantity_bar.png"
 def crop_price(index):
     s = ("select cname from crop")
     res = getresult(s)
@@ -729,7 +729,7 @@ def crop_price(index):
     else:
         ylabel = "variance"
     barGraph(Xs,Ys[index],"bid",ylabel,"crop_price_" + ylabel)
-    return ret
+    return "crop_price_" + ylabel + "_bar.png"
 def bank_rateofff(index):
     s = ("select bid from bank")
     res = getresult(s)
@@ -771,4 +771,4 @@ def bank_rateofff(index):
     else:
         ylabel = "variance"
     barGraph(Xs,Ys[index],"bid",ylabel,"bank_rateoff_" + ylabel)
-    return ret
+    return "bank_rateoff_" + ylabel + "_bar.png"
