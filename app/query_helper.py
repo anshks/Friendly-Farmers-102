@@ -3,8 +3,28 @@ from app import ( app )
 from flask import ( current_app, g )
 from math import ( ceil )
 from geopy.geocoders import ( Nominatim )
+import matplotlib.pyplot as plt
+import numpy as np
+
 nom = Nominatim()
 
+def barGraph(X, Y, xLabel, yLabel):
+    # X, Y -> list, xLabel,yLabel -> string
+    plt.bar(X, Y, align='center', alpha=0.5)
+    plt.xticks(X)
+    plt.ylabel(xLabel)
+    plt.title(yLabel)
+    plt.savefig("testBar.png")
+    plt.close()
+
+def pieChart(labels, sizes):
+    # labels, sizes -> list
+    patches, texts = plt.pie(sizes)
+    plt.legend(patches, labels, loc="best")
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.savefig("testPie.png")
+    plt.close()
 def address_to_latlong(address):
 	result = nom.geocode(address)
 	lat = result.latitude
@@ -88,6 +108,9 @@ def init_db():
         check_transporter()
         check_authorities()
         check_shopvendor()
+        bank_rateofff(1)
+        bank_rateofff(0)
+        shopvendor_auth()
 
 
 def create_the_databse():
@@ -626,3 +649,126 @@ def get_semester_with_lowest_avg_mark(title):
         "where lecture.name =? group by semester limit 1;", [title])
 
     return best_semester
+def getresult(s):
+    return query_db(s)
+
+
+def shop_provider_auth():
+    s = ("select count(*) from storageprov where authorized=0")
+    result = getresult(s)
+    l = [0,0]
+    l[0] = result[0][0]
+    s = ("select count(*) from storageprov  where authorized=1")
+    result = getresult(s)
+    l[1] = result[0][0]
+    pieChart(["authorized","not_authorized"],l)
+    return l
+def shopvendor_auth():
+    s = ("select count(*) from shopvendor where authorized=0")
+    result = getresult(s)
+    l = [0,0]
+    l[0] = result[0][0]
+    s = ("select count(*) from shopvendor  where authorized=1")
+    result = getresult(s)
+    l[1] = result[0][0]
+    total = l[0] + l[1]
+    pieChart(["authorized","unauthorized"],l)
+    return l
+def crop_sum():
+    s = ("select cname from crop")
+    res = getresult(s)
+    ret = []
+    for i in res:
+        c_name = i[0]
+        s = ("select sum(quantity) from crop where cname='{}'").format(c_name)
+        res1 = getresult(s)
+        ret.append([c_name,res1[0][0]])
+    Xs = []
+    Ys = []*3
+    for i in ret:
+        Xs.append(i[0])
+        Ys[0].append(i[1])
+    barGraph(Xs,Ys,"Crop_name","quantity_sum")
+    return ret
+def crop_price(index):
+    s = ("select cname from crop")
+    res = getresult(s)
+    ret = []
+    for i in res:
+        c_name = i[0]
+        add = []
+        s = ("select sum(price) from crop where cname='{}'").format(c_name)
+        res1 = getresult(s)
+        s = ("select count(*) from crop where cname='{}'").format(c_name)
+        res2 = getresult(s)
+        len2 = res2[0][0]
+        mean1 = res1[0][0]/res2[0][0]
+        add.append(c_name)
+        s = ("select quantity from crop where cname='{}'").format(c_name)
+        res1 = getresult(s)
+        stdev = 0
+        for j in res1:
+            stdev += (j[0] - mean1)**2/(len2)
+        stdev = stdev**(0.5)
+        add.append(stdev)
+        add.append(mean1)
+        add.append(stdev**2)
+        ret.append(add)
+    Xs = []
+    Ys = []*3
+    for i in ret:
+        Xs.append(i[0])
+        Ys[0].append(i[1])
+        Ys[1].append(i[2]);
+        Ys[2].append(i[3]);
+    ylabel = ""
+    if(index == 0):
+        ylabel = "stdev"
+    elif(index == 1):
+        ylabel = "mean"
+    else:
+        ylabel = "variance"
+    barGraph(Xs,Ys[index],"bid",ylabel)
+    return ret
+def bank_rateofff(index):
+    s = ("select bid from bank")
+    res = getresult(s)
+    ret = []
+    for i in res:
+        bank_id = i[0]
+        add = []
+        s = ("select sum(rateoffr) from bank where bid='{}'").format(bank_id)
+        res1 = getresult(s)
+        s = ("select count(*) from bank where bid='{}'").format(bank_id)
+        res2 = getresult(s)
+        len2 = res2[0][0]
+        mean1 = res1[0][0]/res2[0][0]
+        add.append(bank_id)
+        s = ("select rateoffr from bank where bid='{}'").format(bank_id)
+        res1 = getresult(s)
+        stdev = 0
+        for j in res1:
+            stdev += (j[0] - mean1)**2/(len2)
+        stdev = stdev**(0.5)
+        add.append(stdev)
+        add.append(mean1)
+        add.append(stdev**2)
+        ret.append(add)
+    Xs = []
+    Ys = [[],[],[],[]]
+    print(Ys)
+    for i in ret:
+        Xs.append(i[0])
+        # print(i)
+        Ys[0].append(i[1])
+        Ys[1].append(i[2]);
+        Ys[2].append(i[3]);
+    ylabel = ""
+    if(index == 0):
+        ylabel = "stdev"
+    elif(index == 1):
+        ylabel = "mean"
+    else:
+        ylabel = "variance"
+    barGraph(Xs,Ys[index],"bid",ylabel)
+    return ret
