@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS svcrop
   cid               string not null,
   amount_bought     decimal not null,
   primary key ( svid , cid )
-  foreign key ( svid ) references shopvendors ( svid ), 
+  foreign key ( svid ) references shopvendor ( svid ), 
   foreign key ( cid ) references crop ( cid )
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS shop_inv
   item_price        decimal not null,
   units             decimal not null,
   primary key ( svid , item_name ),
-  foreign key ( svid ) references shopvendors ( svid )
+  foreign key ( svid ) references shopvendor ( svid )
 );
 
 DROP TABLE IF EXISTS transporter;
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS fsvt
   svid               string not null,
   primary key (transid),
   foreign key (fid) references farmer (fid),
-  foreign key (svid) references shopvendors (svid)
+  foreign key (svid) references shopvendor (svid)
 );
 
 DROP TABLE IF EXISTS transcrop;

@@ -83,7 +83,11 @@ def init_db():
         create_the_databse();
         print('\n\n> Created the database')
         print(query_db("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"), '\n')
-
+        check_farmer()
+        check_banks()
+        check_transporters()
+        check_authorities()
+        check_shopvendor()
 def create_the_databse():
     insertintotrasaction()
     insertintoloan()
@@ -259,6 +263,260 @@ def insertintoftt():
     insert('ftt', ('transid','fid','tid'), ('TR_111','F_104','T_102'))
     insert('ftt', ('transid','fid','tid'), ('TR_112','F_105','T_103'))
 
+def farmer_nearby_crop_price(crop_name,lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = ("select price from crop where cname='{}' and cid in (select cid from landcrop where lid in (select lid from land as L where L.lat between {} AND {} and L.long between {} and {}))").format(crop_name,lat_min,lat_max,lon_min,lon_max)
+    result = query_db(
+        s
+        )
+    return result
+
+def farmer_available_lrates():
+    return query_db("select distinct rateoffr from bank")
+
+def farmer_nearby_transport_fac(lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = ("select * from transporter where transporter.lat between {} and {} and transporter.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
+    result = query_db(
+        s
+        )
+    return result
+
+def farmer_nearby_storage_fac(lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = ("select * from storagefacloc as D where D.lat between {} and {} and D.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
+    result = query_db(
+        s
+        )
+    return result
+
+def check_farmer():
+    print("Farmer : 1 -> nearby price rates of crops")
+    print(farmer_nearby_crop_price("rice",30,70))
+    print("done")
+    print("Farmer : 2 -> available loan rates")
+    print(farmer_available_lrates())
+    print("done")
+    print("Farmer : 3 -> nearby transport facilities")
+    print(farmer_nearby_transport_fac(20,70))
+    print("done")
+    print("Farmer : 4 -> nearby Storage Facilites")
+    print(farmer_nearby_storage_fac(20,70))
+    print("done")
+
+
+def bank_no_loan_giv(BID):
+
+    s = "select count(*) from bankfloan as l where l.bid='{}'".format(BID);
+    # print(s)
+    result = query_db(
+        s
+        )
+    return result
+
+def bank_number_of_online_trans():
+    s = "select count(*) from transactions as t1 where t1.method='Online' ";
+    # print(s)
+    result = query_db(
+        s
+        )
+    return result
+
+def bank_rate_offr(lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = ("select bank.rateoffr from bank where bank.lat between {} and {} and bank.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
+    result = query_db(
+        s
+        )
+    return result
+
+def bank_total_pending(BID):
+    s = ("select SUM(pendamt) from bankloan,loan where bankloan.bid='{}' and loan.lid=bankloan.lid").format(BID)
+    result = query_db(
+        s
+        )
+    return result
+
+def bank_total_lgiven():
+    s = "select SUM(iniamt) from loan;"
+    result = query_db(
+        s
+        )
+    return result
+
+def check_banks():
+    print("banks : 1 -> number of loans that have been given out")
+    print(bank_no_loan_giv("B_101"))
+    print("done")
+    print("banks : 2 -> number of online trans")
+    print(bank_number_of_online_trans())
+    print("done")
+    print("banks : 3 -> rates offered by local banks")
+    print(bank_rate_offr(20,70))
+    print("done")
+    print("banks : 4 -> total amount of all pending loans")
+    print(bank_total_pending("B_101"))
+    print("done")
+    print("bank : 5 -> total amount of loans given")
+    print(bank_total_lgiven())
+    print("done")
+
+def trans_check_auth_req(TID):
+    s = ("select authorized from transporters as T where  T.tid ='{}'").format(TID)
+    result = query_db(
+        s
+        )
+    return result
+def trans_prices_offer(weight):
+    s = ("select tid,Price*{} from (SELECT tid,Price from transporters where mintwht <= {} and maxtwht >= {})").format(weight,weight,weight)
+    result = query_db(
+        s
+        )
+    return result
+def trans_resources_left():
+    return
+def trans_dist():
+    return
+def trans_res_wieght_transport(TID):
+    s = ("select maxtwht from transporters as A where A.tid='{}'").format(TID)
+    result = query_db(
+        s
+        )
+    return result
+def check_transporters():
+    print("transporters check a")
+    print(trans_check_auth_req("T_101"))
+    print("done")
+    print("transporters check b")
+    print(trans_prices_offer(20))
+    print("done")
+    print("transporter check c")
+    print(trans_resources_left())
+    print("done")
+    print("transporter check d")
+    print(trans_dist())
+    print("done")
+    print("transporters check e")
+    print(trans_res_wieght_transport("T_101"))
+    print("done")
+
+def shopvend_priceofcrop_in_mylocality(crop_name,lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = ("select item_price from shop_inv where item_name='{}' and svid in ( select svid from shopvendor as A where A.lat between {} and {} and A.long between {} and {})").format(crop_name,lat_min,lat_max,lon_min,lon_max)
+    result = query_db(
+        s
+        )
+    return result
+def shopvend_check_auth(SVID):
+    s = ("select authorized from shopvendor where svid='{}'").format(SVID)
+    result = query_db(
+        s
+        )
+    return result
+def shopvend_rates_nearby_forloan(lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = ("Select bank.rateoffr from bank where bank.lat between {} and {} and bank.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
+
+    result = query_db(
+        s
+        )
+    return result
+def shopvend_inv(SVID):
+    s = ("select * from shop_inv where shop_inv.svid='{}'").format(SVID)
+    result = query_db(
+        s
+        )
+    return result
+def shopvend_printstate():
+    return
+def count_nonauth(name):
+    s = "select count(*) from {} as b where b.authorized=0".format(name)
+    res = query_db(s)
+    return res[0][0]
+def auth_number_non_auth_units():
+    ans = count_nonauth("bank")
+    ans += count_nonauth("farmer")
+    ans += count_nonauth("shopvendor")
+    ans += count_nonauth("storageprov")
+    return ans;
+def auth_no_pend_auth():
+    s = "select  count(authorized) from (select authorized from shopvendors union all select authorized from storageprov union all select authorized from transporters) where authorized=0"
+    res = query_db(s)
+    return res;
+def auth_total_inc_trans():
+    s = "select SUM(transactions.amount) from transactions where transactions.method!='Complete'"
+    res = query_db(s)
+    return res;
+def auth_rates_off_loc(crop_name,lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = "select c.cid, c.cname, c.units, c.price from crop c inner join landcrop lc on c.cid=lc.cid inner join land l on lc.lid=l.lid inner join farmerland fl on l.lid=fl.lid inner join farmer f on fl.fid=f.fid where f.lat between {} and {} and f.long between {} and {} and c.cname='{}'".format(lat_min,lat_max,lon_min,lon_max,crop_name)
+    res = query_db(s)
+    return res
+def auth_no_inc_trans(lat,long):
+    lat_max = lat + 20
+    lat_min = lat - 20
+    lon_min = long - 20
+    lon_max = long + 20
+    s = " Select count(*) from shopvendor as A where A.lat between {} and {} and A.long between {} and {} ".format(lat_min,lat_max,lon_min,lon_max)
+    res = query_db(s)
+    return res;
+
+def check_authorities():
+    print("auth a")
+    print(auth_number_non_auth_units())
+    print("done")
+    print("auth b")
+    print(auth_no_pend_auth())
+    print("done")
+    print("auth c")
+    print(auth_total_inc_trans());
+    print("done")
+    print("auth d")
+    print(auth_rates_off_loc("rice",20,70))
+    print("done")
+    print("auth e")
+    print(auth_no_inc_trans(20,70))
+    print("done")
+    return
+
+def check_shopvendor():
+    print("shopvendor a")
+    print(shopvend_priceofcrop_in_mylocality("rice",20,70))
+    print("done")
+    print("shopvendor b")
+    print(shopvend_check_auth("SV_191"))
+    print("done")
+    print("shopvendor c")
+    print(shopvend_rates_nearby_forloan(20,70))
+    print("done")
+    print("shopvendor d")
+    print(shopvend_inv("SV_191"))
+    print("done")
+    print("shopvendor e")
+    print(shopvend_printstate())
+    print("done")
+    return
 def get_avg_mark_per_degree():
     """
     Get weighted average mark across all exams that belong to a specific degree.
