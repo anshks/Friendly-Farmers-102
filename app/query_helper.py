@@ -125,6 +125,16 @@ def create_the_databse():
     printalltables('fspt')
     insertintoftt()
     printalltables('ftt')
+    insertintobank()
+    insertintofsvt()
+    insertintostoragefacloc()
+    insertintospstorage()
+    insertintostoragecrop()
+    printalltables('bank')
+    printalltables('fsvt')
+    printalltables('storagefacloc')
+    printalltables('spstorage')
+    printalltables('storagecrop')
 
 # pagination
 
@@ -264,6 +274,31 @@ def insertintoftt():
     insert('ftt', ('transid','fid','tid'), ('TR_110','F_102','T_101'))
     insert('ftt', ('transid','fid','tid'), ('TR_111','F_104','T_102'))
     insert('ftt', ('transid','fid','tid'), ('TR_112','F_105','T_103'))
+
+def insertintobank():
+    insert('bank', ('bid', 'lat', 'long', 'rateoffr', 'authorized'), ("B_101", 28.614929, 77.217944, 1500, 1))
+    insert('bank', ('bid', 'lat', 'long', 'rateoffr', 'authorized'), ("B_103", 28.614062, 77.220604, 2309, 0))
+    insert('bank', ('bid', 'lat', 'long', 'rateoffr', 'authorized'), ("B-104", 28.610445, 77.222106, 3400, 1))
+
+def insertintostoragefacloc():
+    insert('storagefacloc', ('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'), ('S_145', 'dry', 146, 'kg', 150, 28.600122, 77.210691, 'poultry', 23, 1))
+    insert('storagefacloc', ('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'), ('S_132', 'room temperature', 2345, 'litre', 450, 28.599218, 77.215326, 'poultry', 300, 0))
+    insert('storagefacloc', ('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'), ('S_123', 'cold', 560, 'kg', 786, 28.594508, 77.215540, 'wheat', '20', 1))
+
+def insertintofsvt():
+    insert('fsvt', ('transid', 'fid', 'svid'), ('TR_101', 'F_102', 'SV_191'))
+    insert('fsvt', ('transid', 'fid', 'svid'), ('TR_102', 'F_104', 'SV_192'))
+    insert('fsvt', ('transid', 'fid', 'svid'), ('TR_103', 'F_105', 'SV_193'))
+
+def insertintospstorage():
+    insert('spstorage', ('sid', 'spid'), ('S_145', 'SP_101'))
+    insert('spstorage', ('sid', 'spid'), ('S_132', 'SP_102'))
+    insert('spstorage', ('sid', 'spid'), ('S_123', 'SP_103'))
+
+def insertintostoragecrop():
+    insert('storagecrop', ('sid', 'cid'), ('S_145', 'C_101'))
+    insert('storagecrop', ('sid', 'cid'), ('S_132', 'C_102'))
+    insert('storagecrop', ('sid', 'cid'), ('S_123', 'C_103'))
 
 def farmer_nearby_crop_price(crop_name,lat,long):
     lat_max = lat + 20
