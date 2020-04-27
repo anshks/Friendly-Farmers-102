@@ -445,8 +445,6 @@ def shopvend_inv(SVID):
         s
         )
     return result
-def shopvend_printstate():
-    return
 def count_nonauth(name):
     s = "select count(*) from {} as b where b.authorized=0".format(name)
     res = query_db(s)
@@ -512,9 +510,6 @@ def check_shopvendor():
     print("done")
     print("shopvendor d")
     print(shopvend_inv("SV_191"))
-    print("done")
-    print("shopvendor e")
-    print(shopvend_printstate())
     print("done")
     return
 def get_avg_mark_per_degree():
