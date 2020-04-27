@@ -1,19 +1,22 @@
-from app import (
-    app
-)
-from flask import (
-    current_app,
-    g
-)
-from math import (
-    ceil
-)
+import sqlite3, geopy
+from app import ( app )
+from flask import ( current_app, g )
+from math import ( ceil )
+from geopy.geocoders import ( Nominatim )
+nom = Nominatim()
 
-import sqlite3
+def address_to_latlong(address):
+	result = nom.geocode(address)
+	lat = result.latitude
+	long = result.longitude
+	return [lat, long]
 
+def latlong_to_address(lat,long):
+	address = nom.reverse(str(lat) + ',' + str(long))
+	return address
 
 # Basic database helper methods
-
+# Establishing connection with db
 def get_db():
     """
     get database connection
@@ -23,7 +26,7 @@ def get_db():
         db = g._database = sqlite3.connect(current_app.config['DATABASE_PATH'])
     return db
 
-
+# Executing queries
 def query_db(query, args=(), one=False):
     """
     execute a database query
@@ -37,7 +40,7 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-
+# Inserting queries
 def insert(table, fields=(), values=()):
     """
     insert new row into an existing table
@@ -54,59 +57,67 @@ def insert(table, fields=(), values=()):
         ', '.join(fields),
         ', '.join(['?'] * len(values))
     )
+    print('Executing insert query for', table, '\n')
     cur.execute(query, values)
     db.commit()
     id = cur.lastrowid
     cur.close()
-    # printalltables()
+    print('Inserted the query for', table, '\n')
     return id
 
-
+# Initiliaze the database
 def init_db():
     """
     initialize a database
     created a database schema according to schema.sql
     """
     with app.app_context():
+        print('\n\n> Checking if the geopy module is working, entered (lat, long) as (10, 10)')
+        print(latlong_to_address(10, 10))
         db = get_db()
+        print('\n\n> Started with the creating the database')
         with app.open_resource('schema.sql', mode='r') as f:
             store= f.read()
             db.cursor().executescript(store)
         db.commit()
-        insertintotrasaction()
-        insertintoloan()
-        printalltables('loan')
-        printalltables('trasaction')
-        insertintofarmer()
-        insertintoland()
-        printalltables('farmer')
-        printalltables('land')
-        insertintocrop()
-        insertintoshopv()
-        printalltables('crop')
-        printalltables('shopvendors')
-        insertintotransporters()
-        insertintostorageprov()
-        printalltables('transporters')
-        printalltables('storageprov')
-        insertintosvcrop()
-        insertintoloantrans()
-        insertintobankfloan()
-        printalltables('svcrop')
-        printalltables('loantrans')
-        printalltables('bankfloan')
-        insertintotranscrop()
-        insertintoshopinv()
-        printalltables('transcrop')
-        printalltables('shop_inv')
-        insertintolandcrop()
-        insertintofarmerland()
-        insertintofspt()
-        printalltables('landcrop')
-        printalltables('farmerland')
-        printalltables('fspt')
-        insertintoftt()
-        printalltables('ftt')
+        print('\n\n> Created the database')
+        print(query_db("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"), '\n')
+
+def create_the_databse():
+    insertintotrasaction()
+    insertintoloan()
+    printalltables('loan')
+    printalltables('trasaction')
+    insertintofarmer()
+    insertintoland()
+    printalltables('farmer')
+    printalltables('land')
+    insertintocrop()
+    insertintoshopv()
+    printalltables('crop')
+    printalltables('shopvendors')
+    insertintotransporters()
+    insertintostorageprov()
+    printalltables('transporters')
+    printalltables('storageprov')
+    insertintosvcrop()
+    insertintoloantrans()
+    insertintobankfloan()
+    printalltables('svcrop')
+    printalltables('loantrans')
+    printalltables('bankfloan')
+    insertintotranscrop()
+    insertintoshopinv()
+    printalltables('transcrop')
+    printalltables('shop_inv')
+    insertintolandcrop()
+    insertintofarmerland()
+    insertintofspt()
+    printalltables('landcrop')
+    printalltables('farmerland')
+    printalltables('fspt')
+    insertintoftt()
+    printalltables('ftt')
 
 # pagination
 

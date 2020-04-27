@@ -1,21 +1,7 @@
-from flask_wtf import (
-    FlaskForm
-)
-from wtforms import (
-    StringField,
-    IntegerField,
-    SubmitField,
-    SelectField
-)
-from wtforms.validators import (
-    DataRequired,
-    Length,
-    ValidationError
-)
-from app.query_helper import (
-    query_db
-)
-
+from flask_wtf import ( FlaskForm )
+from wtforms import ( StringField, IntegerField, SubmitField, SelectField )
+from wtforms.validators import ( DataRequired, Length, ValidationError )
+from app.query_helper import ( query_db )
 
 class AddLectureForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 1024)])
@@ -27,13 +13,11 @@ class AddLectureForm(FlaskForm):
         if len(query_db("select * from lecture where shortcut= ? ", (shortcut.data,))) > 0:
             raise ValidationError("Shortcut {} already exists!".format(shortcut.data))
 
-
 class AddExecutionForm(FlaskForm):
     shortcut = SelectField('Shortcut', coerce=str, validators=[DataRequired()])
     lecturer = StringField('Lecturer', validators=[DataRequired()])
     semester = IntegerField('Semester', default=1, validators=[DataRequired()])
     submit = SubmitField('Submit')
-
 
 class AddExamForm(FlaskForm):
     executions = SelectField('Execution', coerce=str, validators=[DataRequired()])
