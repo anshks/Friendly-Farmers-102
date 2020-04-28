@@ -1,17 +1,37 @@
 # Friendly Farmers 101          <img src="https://cdn.worldvectorlogo.com/logos/flask.svg" height="30"> 
 
-### About this Repository
+## About this project
+
+### The idea:
+
+To create a platform for the stakeholders involved at each stage of food production, i.e. from the production of agriculture produce to the sale of the final product in the market. 
+This platform will allow these stakeholders to interact with each other and will facilitate the purchase and sale of raw materials and produce respectively.
+It will further allow the authorities, such as the Government to overlook the trade of agricultural produce, thereby increasing the transparency!
+
+
+### The stakeholders 
+- Farmers
+- Storage providers
+- Transporters
+- Banks
+- Distributors
+- Authorities
+
+
+## About this Repository
 
 This repo contains the flask code for a portal of:
 
 |Directory               |Component|
 |------------------------|-----------------------------------------------|
 
+## Installation
+- clone this repo
+- create a new virtual environment with python >=3.7
+- install requirements `pip3 install -r requirements.txt` 
+- run app `python3 run.py` or `flask run` (enable auto reload, if chosen the latter) 
 
-### Contributing
-
-First, read the [contribution guidelines](CONTRIBUTING.md). Ensure you understand the code.
-#### Setup
+## Setup
 
 The following instructions describe how to fork this repository in order 
 to contribute to this:
@@ -30,13 +50,13 @@ to contribute to this:
 
 4. Follow the instructions in the README files of each of the directories listed under [About this Repository](#about-this-repository) section of this readme to set up your development environment.
 
-# Installation
-- clone this repo
-- create a new virtual environment with python >=3.7
-- install requirements `pip3 install -r requirements.txt` 
-- run app `python3 run.py` or `flask run` (enable auto reload, if chosen the latter) 
 
-### Development Workflow
+## Contributing
+
+First, read the [contribution guidelines](CONTRIBUTING.md). Ensure you understand the code.
+
+
+## Development Workflow
 
 After you have forked and cloned the repository, use the following steps to
 make and manage changes. After you have finished making changes, you can 
@@ -89,3 +109,15 @@ repository.
     To learn more about referencing issues in your pull request or commit messages, see <https://help.github.com/articles/closing-issues-using-keywords/>.
 
 1. Celebrate!
+
+### Help
+Reach out to any of the developers in case of any issues/concerns
+
+Bug reports can be made on our github issues. If you think something isn't working, don't hesitate to reach out - it is probably us and not you!
+
+### Developed by
+- [Ansh Sharma](https://github.com/anshks)
+- [Anunay Yadav](https://github.com/Anunay-Yadav)
+- [Mukul Tomar](https://github.com/Tomcod)
+- [Rishi Raj Jain](https://github.com/digitalPlayer1125)
+- [Ruhma Mehek Khan](https://github.com/ruhmamehek)
