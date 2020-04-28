@@ -1,4 +1,4 @@
-# Friendly Farmers 101  <img src="https://images-six.now.sh/icon-96.png" height="50">
+# Friendly Farmers 101  <img src="https://cdn.worldvectorlogo.com/logos/flask.svg" height="30">
 
 ### About this Repository
 
