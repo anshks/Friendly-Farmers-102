@@ -6,30 +6,42 @@ from app.query_helper import ( query_db )
 class password(FlaskForm):
     passw= StringField('password', validators=[ Length(1, 1024)])
     submit= SubmitField('Submit')
+
 class authorize_farmer(FlaskForm):
     fid= StringField('farmerid', validators=[Length(1, 1024)])
     submit1= SubmitField('Submit')
+    
 class authorize_bank(FlaskForm):
     bid= StringField('bank id', validators=[Length(1, 1024)])
     submit2= SubmitField('Submit')
+
 class authorize_transporter(FlaskForm):
     transid= StringField('transporter id', validators=[ Length(1, 1024)])
     submit3= SubmitField('Submit')
+
 class authorize_shopvendor(FlaskForm):
     svid= StringField('shopvendor id', validators=[ Length(1, 1024)])
-    submit4= SubmitField('Submit')     
+    submit4= SubmitField('Submit')    
+
 class rateoffr_bank(FlaskForm):
     rateoffr= DecimalField('new rate offered', validators=[])
     bid= StringField('bank id', validators=[ Length(1, 1024)])
     submit5= SubmitField('Submit') 
+
 class price_transporter(FlaskForm):
     price= DecimalField('new price', validators=[])
     transid= StringField('transporter id', validators=[Length(1, 1024)])
     submit6= SubmitField('Submit')  
+
 class item_price(FlaskForm):
     price = DecimalField('new price offered ', validators=[])
     cropid= StringField('shopvendor id', validators=[Length(1, 1024)])
     submit7= SubmitField('Submit') 
+
+class authorize_storageprov(FlaskForm):
+    spid= StringField('storage provider id', validators=[ Length(1, 1024)])
+    submit8= SubmitField('Submit')
+
 class AddFarmer(FlaskForm):
     name= StringField('Name', validators=[DataRequired(), Length(1, 1024)])
     contact= IntegerField('Contact', validators=[DataRequired()])
@@ -87,12 +99,14 @@ class AddStoragefac(FlaskForm):
     availability = IntegerField('available',validators=[DataRequired()]) 
     Storageprov_id = StringField('registered id of storage provider', validators=[DataRequired(), Length(1, 1024)])
     submit = SubmitField('Submit')
+
 class AddShopInv(FlaskForm):
     svid= StringField('registered id of shop vendor', validators=[DataRequired(), Length(1, 1024)])
     item_name= StringField('item name', validators=[DataRequired(), Length(1, 1024)])
     item_price = DecimalField('Price',validators=[DataRequired()])
     units = StringField('units', validators=[DataRequired(), Length(1, 1024)])
     submit = SubmitField('Submit')
+
 class AddLoan(FlaskForm):
     trans_id = StringField('transaction id', validators=[DataRequired(), Length(1, 1024)])
     bid = StringField('registered id of bank', validators=[DataRequired(), Length(1, 1024)])
@@ -102,11 +116,13 @@ class AddLoan(FlaskForm):
     iniamt = DecimalField('initial amount',validators=[DataRequired()])
     pendamt = DecimalField('pending amount',validators=[DataRequired()]) 
     submit = SubmitField('Submit')
+
 class Addbank(FlaskForm):
     lat = DecimalField('latitude',validators=[DataRequired()])
     long  = DecimalField('longitude',validators=[DataRequired()])
     rateoffr = DecimalField('rate offered',validators=[DataRequired()])
     submit = SubmitField('Submit')
+
 class Addtrans(FlaskForm):
     amount = DecimalField('amount',validators=[DataRequired()])
     method = StringField('method of transaction', validators=[DataRequired(), Length(1, 1024)])
@@ -115,6 +131,7 @@ class Addtrans(FlaskForm):
     identity_from = StringField('identity of person from', validators=[DataRequired(), Length(1, 1024)])
     identity_to = StringField('identity of person to', validators=[DataRequired(), Length(1, 1024)])
     submit = SubmitField('Submit')
+
 class AddLectureForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 1024)])
     shortcut = StringField('Shortcut', validators=[DataRequired(), Length(1, 64)])

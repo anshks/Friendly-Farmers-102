@@ -40,9 +40,7 @@ def latlong_to_address(lat,long):
 	address = nom.reverse(str(lat) + ',' + str(long))
 	return address
 
-# Basic database helper methods
-# Establishing connection with db
-# Basic database helper methods
+# Basic database helper methods, helper methods
 # Establishing connection with db
 def get_db():
     """
@@ -129,7 +127,6 @@ def init_db():
         shop_inv1 = shop_inv(SVID)
         #display yeha se shuru hai
 
-
 def create_the_databse():
     insertintotrasaction()
     insertintoloan()
@@ -208,7 +205,6 @@ class Pagination:
                     yield num
                     last = num
 
-
 # special queries
 
 def printalltables(table):
@@ -261,7 +257,7 @@ def insertintotransporter():
     insert('transporter', ('tid','tname','price','mintwht','maxtwht','resavl','authorized','lat','long'), ('T_103','Randeep Singh',1300.00, 10, 500, 500, 0,28.594018,77.198825))    
 
 def insertintostorageprov():
-    insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_101', 'Madhav Thakur', 9999999999, 28.615268, 77.193353, 1))
+    insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_101', 'Madhav Thakur', 9999999999, 28.615268, 77.193353, 0))
     insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_102', 'Rajesh Prasad', 9999999888, 28.615155, 77.198460, 1))
     insert('storageprov', ('spid','sname','contact','lat','long','authorized'), ('SP_103', 'Astha Malik', 9997879333, 28.613949, 77.202237, 1))
 
@@ -343,11 +339,11 @@ def insertintostoragecrop():
 def update_authorized_farmer(val, farmer_id):
     s = ('update farmer set authorized = {} where fid = "{}"').format(val, farmer_id)
     query_db(s)
-    
 
 def update_contact_farmer(contact_no, farmer_id):
     s= ('update farmer set fcontact={} where fid ="{}"').format(contact_no, farmer_id)
     query_db(s)
+
 def update_shopinv_amount(units,svid,item_name):
     quant = units
     s = ('select units from shop_inv where svid ="{}" and item_name="{}"').format(svid,item_name)
@@ -375,6 +371,7 @@ def update_resavl_transporter(resval_val, transporter_id):
 def update_mintht_maxtht( transporter_id, mintht1=0, maxtht1=0 ):
     s = ('update transporter set mintwht={}, maxtwht = {} where tid = "{}"').format(mintht1, maxtht1, transporter_id)
     query_db(s)
+
 def update_price_transporter(p1, transporter_id):
     s = ('update transporter set price = {} where tid = "{}"').format(p1, transporter_id)
     query_db(s)
@@ -391,9 +388,12 @@ def update_price_shopvendor(price1, crop_id):
     s = ( 'update crop set price = {} where cid = "{}"').format(price1, crop_id)
     query_db(s)
 
-
 def update_item_price(item_price_val, shop_inv_id):
     s = ('update shop_inv set item_price = {} where svid = "{}"').format(item_price_val, shop_inv_id)
+    query_db(s)
+
+def update_authorized_storageprov(val, sp_id):
+    s = ('update storageprov set authorized = {} where spid = "{}"').format(val, sp_id)
     query_db(s)
 
 def farmer_nearby_crop_price(crop_name,lat,long):
@@ -449,7 +449,7 @@ def check_farmer():
 
 def bank_no_loan_giv(BID):
 
-    s = "select count(*) from bankfloan as l where l.bid='{}'".format(BID);
+    s = "select count(*) from bankfloan as l where l.bid='{}'".format(BID)
     # print(s)
     result = query_db(
         s
@@ -457,7 +457,7 @@ def bank_no_loan_giv(BID):
     return result
 
 def bank_number_of_online_trans():
-    s = "select count(*) from transactions as t1 where t1.method='Online' ";
+    s = "select count(*) from transactions as t1 where t1.method='Online' "
     # print(s)
     result = query_db(
         s
@@ -512,18 +512,21 @@ def trans_check_auth_req(TID):
         s
         )
     return result
+
 def trans_prices_offer(weight):
     s = ("select tid,Price*{} from (SELECT tid,Price from transporter where mintwht <= {} and maxtwht >= {})").format(weight,weight,weight)
     result = query_db(
         s
         )
     return result
+
 def trans_resources_left(tname):
     s = ("select SUM(resavl) from transporter as A where A.tname='{}'").format(tname)
     result = query_db(
         s
         )
     return result
+
 def return_latlong_fromid(id= ''):
     try:
         if id.find('F_')!=-1:
@@ -571,12 +574,14 @@ def trans_dist(idA= '', idB= ''):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = R*c
     return d
+
 def trans_res_wieght_transport(TID):
     s = ("select maxtwht from transporter as A where A.tid='{}'").format(TID)
     result = query_db(
         s
         )
     return result
+
 def check_transporter():
     print("transporter check a")
     print(trans_check_auth_req("T_101"))
@@ -604,12 +609,14 @@ def shopvend_priceofcrop_in_mylocality(crop_name,lat,long):
         s
         )
     return result
+
 def shopvend_check_auth(SVID):
     s = ("select authorized from shopvendor where svid='{}'").format(SVID)
     result = query_db(
         s
         )
     return result
+
 def shopvend_rates_nearby_forloan(lat,long):
     lat_max = lat + 20
     lat_min = lat - 20
@@ -621,30 +628,36 @@ def shopvend_rates_nearby_forloan(lat,long):
         s
         )
     return result
+
 def shopvend_inv(SVID):
     s = ("select * from shop_inv where shop_inv.svid='{}'").format(SVID)
     result = query_db(
         s
         )
     return result
+
 def count_nonauth(name):
     s = "select count(*) from {} as b where b.authorized=0".format(name)
     res = query_db(s)
     return res[0][0]
+
 def auth_number_non_auth_units():
     ans = count_nonauth("bank")
     ans += count_nonauth("farmer")
     ans += count_nonauth("shopvendor")
     ans += count_nonauth("storageprov")
-    return ans;
+    return ans
+
 def auth_no_pend_auth():
     s = "select  count(authorized) from (select authorized from shopvendors union all select authorized from storageprov union all select authorized from transporter) where authorized=0"
     res = query_db(s)
-    return res;
+    return res
+
 def auth_total_inc_trans():
     s = "select SUM(transactions.amount) from transactions where transactions.method!='Complete'"
     res = query_db(s)
-    return res;
+    return res
+
 def auth_rates_off_loc(crop_name,lat,long):
     lat_max = lat + 20
     lat_min = lat - 20
@@ -653,6 +666,7 @@ def auth_rates_off_loc(crop_name,lat,long):
     s = "select c.cid, c.cname, c.units, c.price from crop c inner join landcrop lc on c.cid=lc.cid inner join land l on lc.lid=l.lid inner join farmerland fl on l.lid=fl.lid inner join farmer f on fl.fid=f.fid where f.lat between {} and {} and f.long between {} and {} and c.cname='{}'".format(lat_min,lat_max,lon_min,lon_max,crop_name)
     res = query_db(s)
     return res
+
 def auth_no_inc_trans(lat,long):
     lat_max = lat + 20
     lat_min = lat - 20
@@ -660,7 +674,7 @@ def auth_no_inc_trans(lat,long):
     lon_max = long + 20
     s = " Select count(*) from shopvendor as A where A.lat between {} and {} and A.long between {} and {} ".format(lat_min,lat_max,lon_min,lon_max)
     res = query_db(s)
-    return res;
+    return res
 
 def check_authorities():
     print("auth a")
@@ -670,7 +684,7 @@ def check_authorities():
     print(auth_no_pend_auth())
     print("done")
     print("auth c")
-    print(auth_total_inc_trans());
+    print(auth_total_inc_trans())
     print("done")
     print("auth d")
     print(auth_rates_off_loc("rice",20,70))
@@ -694,6 +708,7 @@ def check_shopvendor():
     print(shopvend_inv("SV_191"))
     print("done")
     return
+
 def get_avg_mark_per_degree():
     """
     Get weighted average mark across all exams that belong to a specific degree.
@@ -702,7 +717,6 @@ def get_avg_mark_per_degree():
         "select degree, round((sum(mark * ects) * 1.0) / sum(ects), 1) from exam "
         "join lecture using (shortcut) group by degree")
     return avg_mark_per_degree
-
 
 def get_lecturer_with_lowest_avg_mark():
     """
@@ -720,8 +734,8 @@ def get_semester_with_lowest_avg_mark(title):
     best_semester = query_db(
         "select semester, avg(mark) from exam join lecture using(shortcut)"
         "where lecture.name =? group by semester limit 1;", [title])
-
     return best_semester
+
 def getresult(s):
     return query_db(s)
 
@@ -736,17 +750,19 @@ def storage_provider_auth():
     l[1] = result[0][0]
     pieChart(["authorized","not_authorized"],l,"storage_provider_auth")
     return "storage_provider_auth_pie.png"
+
 def shopvendor_auth():
     s = ("select count(*) from shopvendor where authorized=0")
     result = getresult(s)
     l = [0,0]
     l[0] = result[0][0]
-    s = ("select count(*) from shopvendor  where authorized=1")
+    s = ("select count(*) from shopvendor where authorized=1")
     result = getresult(s)
     l[1] = result[0][0]
     total = l[0] + l[1]
-    pieChart(["authorized","unauthorized"],l,"shopvendor_auth")
+    pieChart(["authorized","unauthorized"], l, "shopvendor_auth")
     return "shopvendor_auth_pie.png"
+
 def crop_sum():
     s = ("select cname from crop")
     res = getresult(s)
@@ -764,6 +780,7 @@ def crop_sum():
     print(Xs,Ys)
     barGraph(Xs,Ys[0],"Crop_name","quantity_sum","crop_quantity")
     return "crop_quantity_bar.png"
+
 def crop_price(index):
     s = ("select cname from crop")
     res = getresult(s)
@@ -795,8 +812,8 @@ def crop_price(index):
         print(i)
         Xs.append(i[0])
         Ys[0].append(i[1])
-        Ys[1].append(i[2]);
-        Ys[2].append(i[3]);
+        Ys[1].append(i[2])
+        Ys[2].append(i[3])
     ylabel = ""
     if(index == 0):
         ylabel = "stdev"
@@ -806,6 +823,7 @@ def crop_price(index):
         ylabel = "variance"
     barGraph(Xs,Ys[index],"bid",ylabel,"crop_price_" + ylabel)
     return "crop_price_" + ylabel + "_bar.png"
+
 def shop_inv(SVID):
     s = ("select item_name,units from shop_inv where svid='{}'").format(SVID)
     res = getresult(s)
@@ -853,8 +871,8 @@ def bank_rateofff(index):
         Xs.append(i[0])
         # print(i)
         Ys[0].append(i[1])
-        Ys[1].append(i[2]);
-        Ys[2].append(i[3]);
+        Ys[1].append(i[2])
+        Ys[2].append(i[3])
     ylabel = ""
     if(index == 0):
         ylabel = "stdev"

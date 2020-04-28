@@ -1,8 +1,52 @@
 from app import ( app, )
 import random
-from flask import ( render_template, redirect, url_for, flash, g )
-from app.forms import ( password,authorize_farmer,authorize_bank,authorize_transporter,authorize_shopvendor,rateoffr_bank,price_transporter,item_price,Addtrans,Addbank,AddLoan,AddShopInv,AddStoragefac,AddStorageProvider, AddTransporter, AddCrop, AddShopVendor, AddFarmer, AddLand, AddLectureForm, AddExecutionForm, AddExamForm )
-from app.query_helper import ( update_authorized_farmer,update_authorized_bank,update_authorized_transporter,update_authorized_shopvendor,update_authorized_shopvendor,update_rateoffr_bank,update_price_transporter,update_price_shopvendor,shop_inv, storage_provider_auth, shopvendor_auth, crop_sum, crop_price, bank_rateofff, query_db, insert, Pagination )
+from flask import ( render_template, 
+                    redirect, 
+                    url_for, 
+                    flash, 
+                    g )
+from app.forms import  (password,
+                        authorize_storageprov,
+                        authorize_farmer,
+                        authorize_bank,
+                        authorize_transporter,
+                        authorize_shopvendor,
+                        rateoffr_bank,
+                        price_transporter,
+                        item_price,
+                        Addtrans,
+                        Addbank,
+                        AddLoan,
+                        AddShopInv,
+                        AddStoragefac,
+                        AddStorageProvider, 
+                        AddTransporter, 
+                        AddCrop, 
+                        AddShopVendor, 
+                        AddFarmer, 
+                        AddLand, 
+                        AddLectureForm, 
+                        AddExecutionForm, 
+                        AddExamForm)
+from app.query_helper import (update_authorized_storageprov, 
+                              update_shopinv_amount, 
+                              update_authorized_farmer,
+                              update_authorized_bank,
+                              update_authorized_transporter,
+                              update_authorized_shopvendor,
+                              update_authorized_shopvendor,
+                              update_rateoffr_bank,
+                              update_price_transporter,
+                              update_price_shopvendor,
+                              shop_inv, 
+                              storage_provider_auth, 
+                              shopvendor_auth, 
+                              crop_sum, 
+                              crop_price, 
+                              bank_rateofff, 
+                              query_db, 
+                              insert, 
+                              Pagination)
 
 @app.route('/')
 def index():
@@ -84,7 +128,6 @@ def add_crop():
         print(query_db("Select * from crop"))
         insert('landcrop',('lid','cid'),(form.land_id.data,new_id))
         flash("Successfully added new crop {}!".format(new_id))
-
         return redirect(url_for('add_crop'))
     return render_template('crop.html', title="Crop", form=form)
 
@@ -100,6 +143,7 @@ def add_storagefac():
         flash("Successfully added")
         return redirect(url_for('add_storagefac'))
     return render_template('storagefac.html',title="storage facility location",form = form)
+
 @app.route('/addshopinv',methods=('GET','POST'))
 def add_shop_inv():
     form = AddShopInv()
@@ -112,6 +156,7 @@ def add_shop_inv():
         flash("Successfully added")
         return redirect(url_for('add_shop_inv'))
     return render_template('shop_inv.html',title="shop inventory",form=form)
+
 @app.route('/Govermentlogin',methods=('GET','POST'))
 def login():
     form = password()
@@ -121,6 +166,7 @@ def login():
             return redirect(url_for('update_queries'))
         return redirect(url_for('login'))
     return render_template('login.html',title="Govermentlogin",form=form)
+
 @app.route('/Govermentchecked',methods=('GET','POST'))
 def update_queries():
     form = authorize_farmer()
@@ -130,41 +176,56 @@ def update_queries():
     form4 = rateoffr_bank()
     form5 = price_transporter()
     form6 = item_price()
+    form7 = authorize_storageprov()
+
     if(form.validate_on_submit() and form.submit1.data):
         update_authorized_farmer(1,form.fid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Farmer")
         print(form.fid.data)
         return redirect(url_for('update_queries'))
+    
     if(form1.validate_on_submit() and form1.submit2.data):
         update_authorized_bank(1,form1.bid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Bank")
         print(form1.bid.data)
         return redirect(url_for('update_queries'))
+    
     if(form2.validate_on_submit() and form2.submit3.data):
         update_authorized_transporter(1,form2.transid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Transporter")
         print(form2.transid.data)
         return redirect(url_for('update_queries'))
+    
     if(form3.validate_on_submit() and form3.submit4.data):
         update_authorized_shopvendor(1,form3.svid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Shop Vendor")
         print(form3.svid.data)
         return redirect(url_for('update_queries'))
+    
     if(form4.validate_on_submit() and form4.submit5.data):
         update_rateoffr_bank(float(form4.rateoffr.data),form4.bid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Bank")
         print(float(form4.rateoffr.data),form4.bid.data)
         return redirect(url_for('update_queries'))
+    
     if(form5.validate_on_submit() and form5.submit6.data):
         update_price_transporter(float(form5.price.data),form5.transid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Transporter")
         print(float(form5.price.data),form5.transid.data)
         return redirect(url_for('update_queries'))
+    
     if(form6.validate_on_submit() and form6.submit7.data):
         update_price_shopvendor(float(form6.price.data),form6.cropid.data)
-        flash("Successfully changed")
+        flash("Successfully Changed Shopvendor")
         return redirect(url_for('update_queries'))
-    return render_template('gov.html',title="shop inventory",form=form,form1=form1,form2=form2,form3=form3,form4=form4,form5=form5,form6=form6)
+    
+    if(form7.validate_on_submit() and form7.submit8.data):
+        update_authorized_storageprov(1,form7.spid.data)
+        flash("Successfully Changed Storage Provider")
+        print(form7.spid.data)
+        return redirect(url_for('update_queries'))
+    return render_template('gov.html',title="Shop Inventory",form=form,form1=form1,form2=form2,form3=form3,form4=form4,form5=form5,form6=form6,form7=form7)
+
 @app.route('/addloan',methods=('GET','POST'))
 def add_loan():
     form = AddLoan()
@@ -177,6 +238,7 @@ def add_loan():
         flash("Successfully added")
         return redirect(url_for('add_loan'))
     return render_template('loan.html',title="loan",form=form)
+
 @app.route('/addbank',methods=('GET','POST'))
 def add_bank():
     form = Addbank()
@@ -187,6 +249,7 @@ def add_bank():
         flash("Successfully added")
         return redirect(url_for('add_bank'))
     return render_template('bank.html',title="bank",form=form)
+
 @app.route('/addtrans',methods=('GET','POST'))
 def add_trans():
     form = Addtrans()
@@ -211,6 +274,7 @@ def add_trans():
                 return redirect(url_for('add_trans'))
         flash("Successfully added")
     return render_template('trans.html',title="trans",form=form)
+
 @app.route('/transporter', methods=('GET', 'POST'))
 def add_transporter():
     form = AddTransporter()
@@ -248,8 +312,7 @@ def add_storage_provider():
 @app.route('/exams/', defaults={'page': 1}, methods=('GET', 'POST'))
 @app.route('/exams/page/<int:page>', methods=('GET', 'POST'))
 def view_exams(page):
-    total_count = query_db(
-        "select count(shortcut) from exam", one=True)[0]
+    total_count = query_db("select count(shortcut) from exam", one=True)[0]
     pagination = Pagination(page, total_count, per_page=3)
     exams = query_db( "select shortcut, name, semester, n_tries, mark, degree,kind " "from exam join lecture using (shortcut) order by shortcut,semester,n_tries limit ?,?", ((page - 1) * pagination.per_page, pagination.per_page))
     next_page = url_for('view_exams', page=page + 1) if pagination.has_next else None
@@ -279,7 +342,6 @@ def add_execution():
     form.shortcut.choices = [(k[0], k[1]) for k in lectures]
 
     if form.validate_on_submit():
-        # insert
         insert('execution', ('shortcut', 'lecturer', 'semester'), (form.shortcut.data, form.lecturer.data, form.semester.data))
         flash("Successfully added execution!")
         return redirect(url_for('add_execution'))

@@ -3,11 +3,9 @@
 ## About this project
 
 ### The idea:
-
-To create a platform for the stakeholders involved at each stage of food production, i.e. from the production of agriculture produce to the sale of the final product in the market. 
+To create a platform for the stakeholders involved at each stage of food production, i.e. from the production of agriculture produce to the sale of the final product in the market.
 This platform will allow these stakeholders to interact with each other and will facilitate the purchase and sale of raw materials and produce respectively.
 It will further allow the authorities, such as the Government to overlook the trade of agricultural produce, thereby increasing the transparency!
-
 
 ### The stakeholders 
 - Farmers
@@ -17,11 +15,8 @@ It will further allow the authorities, such as the Government to overlook the tr
 - Distributors
 - Authorities
 
-
 ## About this Repository
-
 This repo contains the flask code for a portal of:
-
 |Directory               |Component|
 |------------------------|-----------------------------------------------|
 
@@ -119,5 +114,5 @@ Bug reports can be made on our github issues. If you think something isn't worki
 - [Ansh Sharma](https://github.com/anshks)
 - [Anunay Yadav](https://github.com/Anunay-Yadav)
 - [Mukul Tomar](https://github.com/Tomcod)
-- [Rishi Raj Jain](https://github.com/digitalPlayer1125)
+- [Rishi Raj Jain](https://github.com/digitalPlayers1125)
 - [Ruhma Mehek Khan](https://github.com/ruhmamehek)
