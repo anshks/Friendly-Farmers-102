@@ -60,6 +60,8 @@ class AddLand(FlaskForm):
     areaocc= DecimalField('Areaocc', validators=[DataRequired()])
     lat= DecimalField('Lat', validators=[DataRequired()])
     long= DecimalField('Long', validators=[DataRequired()])
+    Crop_id = StringField('Crop_id', validators=[DataRequired(), Length(1, 1024)])
+    Farmer_id = StringField('Farmer id', validators=[DataRequired(), Length(1, 1024)])
     submit= SubmitField('Submit')
 
 class AddTransporter(FlaskForm):
@@ -78,6 +80,7 @@ class AddCrop(FlaskForm):
     farming= StringField('Farming', validators=[DataRequired()])
     quantity= DecimalField('Quantity', validators=[DataRequired()]) #kg's
     price= DecimalField('Price', validators=[DataRequired()])
+    land_id = StringField('Land id', validators=[DataRequired()])
     submit= SubmitField('Submit')
 
 class AddStorageProvider(FlaskForm):
@@ -85,6 +88,7 @@ class AddStorageProvider(FlaskForm):
     contact= IntegerField('Contact', validators=[DataRequired()])
     lat= DecimalField('Lat', validators=[DataRequired()])
     long= DecimalField('Long', validators=[DataRequired()])
+    Storageprov_id = StringField('Storage provider id', validators=[DataRequired(), Length(1, 1024)])
     submit= SubmitField('Submit')
 
 class AddStoragefac(FlaskForm):
