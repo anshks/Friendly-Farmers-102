@@ -87,7 +87,7 @@ class Addtrans(FlaskForm):
     to_id = StringField('registered id of reciever', validators=[DataRequired(), Length(1, 1024)])
     identity_from = StringField('identity of person from', validators=[DataRequired(), Length(1, 1024)])
     identity_to = StringField('identity of person to', validators=[DataRequired(), Length(1, 1024)])
- 
+    submit = SubmitField('Submit')
 class AddLectureForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 1024)])
     shortcut = StringField('Shortcut', validators=[DataRequired(), Length(1, 64)])
