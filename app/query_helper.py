@@ -207,11 +207,14 @@ class Pagination:
 
 # special queries
 
+# Print Table Query
 def printalltables(table):
     alltables= query_db("Select * from "+table)
     print(alltables)
     return alltables
 
+
+# Insert Queries
 def insertintotrasaction():
     insert('transactions', ('transid', 'amount', 'method'), ('TR_101', 15000.00, 'Online'))
     insert('transactions', ('transid', 'amount', 'method'), ('TR_102', 120000.00, 'Cash'))
@@ -336,6 +339,7 @@ def insertintostoragecrop():
     insert('storagecrop', ('sid', 'cid'), ('S_123', 'C_103'))
 
 
+# Update Queries
 def update_authorized_farmer(val, farmer_id):
     s = ('update farmer set authorized = {} where fid = "{}"').format(val, farmer_id)
     query_db(s)
@@ -396,6 +400,8 @@ def update_authorized_storageprov(val, sp_id):
     s = ('update storageprov set authorized = {} where spid = "{}"').format(val, sp_id)
     query_db(s)
 
+
+# Queries related to the stakeholders
 def farmer_nearby_crop_price(crop_name,lat,long):
     lat_max = lat + 20
     lat_min = lat - 20
@@ -448,7 +454,6 @@ def check_farmer():
 
 
 def bank_no_loan_giv(BID):
-
     s = "select count(*) from bankfloan as l where l.bid='{}'".format(BID)
     # print(s)
     result = query_db(
@@ -526,54 +531,6 @@ def trans_resources_left(tname):
         s
         )
     return result
-
-def return_latlong_fromid(id= ''):
-    try:
-        if id.find('F_')!=-1:
-            s = ("select A.lat, A.long from farmer as A where A.fid='{}'").format(id)
-            result = query_db(
-                s
-                )
-            return result
-        elif id.find('LD_')!=-1:
-            s = ("select A.lat, A.long from land as A where A.lid='{}'").format(id)
-            result = query_db(
-                s
-                )
-            return result
-        elif id.find('SV_')!=-1:
-            s = ("select A.lat, A.long from shopvendor as A where A.svid='{}'").format(id)
-            result = query_db(
-                s
-                )
-            return result
-        elif id.find('SP_')!=-1:
-            s = ("select A.lat, A.long from storageprov as A where A.spid='{}'").format(id)
-            result = query_db(
-                s
-                )
-            return result
-    except Exception as e:
-        print(e)
-        return (0, 0)
-
-def trans_dist(idA= '', idB= ''):
-    origin1= return_latlong_fromid(idA)
-    origin1= origin1[0]
-    print('Origin 1 is: ', origin1)
-    origin2= return_latlong_fromid(idB)
-    origin2= origin2[0]
-    print('Origin 2 is: ', origin2)
-    R = 6.3781*(10**6)
-    lat1, lat2, lon1, lon2= origin1[0], origin2[0], origin1[1], origin2[1]
-    φ1 = lat1 * math.pi/180
-    φ2 = lat2 * math.pi/180
-    Δφ = (lat2-lat1) * math.pi/180
-    Δλ = (lon2-lon1) * math.pi/180
-    a = math.sin(Δφ/2) * math.sin(Δφ/2) + math.cos(φ1) * math.cos(φ2) * math.sin(Δλ/2) * math.sin(Δλ/2); 
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-    d = R*c
-    return d
 
 def trans_res_wieght_transport(TID):
     s = ("select maxtwht from transporter as A where A.tid='{}'").format(TID)
@@ -708,6 +665,56 @@ def check_shopvendor():
     print(shopvend_inv("SV_191"))
     print("done")
     return
+
+# Returning lat long from the function
+def return_latlong_fromid(id= ''):
+    try:
+        if id.find('F_')!=-1:
+            s = ("select A.lat, A.long from farmer as A where A.fid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+        elif id.find('LD_')!=-1:
+            s = ("select A.lat, A.long from land as A where A.lid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+        elif id.find('SV_')!=-1:
+            s = ("select A.lat, A.long from shopvendor as A where A.svid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+        elif id.find('SP_')!=-1:
+            s = ("select A.lat, A.long from storageprov as A where A.spid='{}'").format(id)
+            result = query_db(
+                s
+                )
+            return result
+    except Exception as e:
+        print(e)
+        return (0, 0)
+
+# Returning distance between 2 pair of (lat, long)
+def trans_dist(idA= '', idB= ''):
+    origin1= return_latlong_fromid(idA)
+    origin1= origin1[0]
+    print('Origin 1 is: ', origin1)
+    origin2= return_latlong_fromid(idB)
+    origin2= origin2[0]
+    print('Origin 2 is: ', origin2)
+    R = 6.3781*(10**6)
+    lat1, lat2, lon1, lon2= origin1[0], origin2[0], origin1[1], origin2[1]
+    φ1 = lat1 * math.pi/180
+    φ2 = lat2 * math.pi/180
+    Δφ = (lat2-lat1) * math.pi/180
+    Δλ = (lon2-lon1) * math.pi/180
+    a = math.sin(Δφ/2) * math.sin(Δφ/2) + math.cos(φ1) * math.cos(φ2) * math.sin(Δλ/2) * math.sin(Δλ/2); 
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = R*c
+    return d
 
 def get_avg_mark_per_degree():
     """
