@@ -3,6 +3,33 @@ from wtforms import ( DecimalField, StringField, IntegerField, SubmitField, Sele
 from wtforms.validators import ( DataRequired, Length, ValidationError )
 from app.query_helper import ( query_db )
 
+class password(FlaskForm):
+    passw= StringField('password', validators=[ Length(1, 1024)])
+    submit= SubmitField('Submit')
+class authorize_farmer(FlaskForm):
+    fid= StringField('farmerid', validators=[Length(1, 1024)])
+    submit1= SubmitField('Submit')
+class authorize_bank(FlaskForm):
+    bid= StringField('bank id', validators=[Length(1, 1024)])
+    submit2= SubmitField('Submit')
+class authorize_transporter(FlaskForm):
+    transid= StringField('transporter id', validators=[ Length(1, 1024)])
+    submit3= SubmitField('Submit')
+class authorize_shopvendor(FlaskForm):
+    svid= StringField('shopvendor id', validators=[ Length(1, 1024)])
+    submit4= SubmitField('Submit')     
+class rateoffr_bank(FlaskForm):
+    rateoffr= DecimalField('new rate offered', validators=[])
+    bid= StringField('bank id', validators=[ Length(1, 1024)])
+    submit5= SubmitField('Submit') 
+class price_transporter(FlaskForm):
+    price= DecimalField('new price', validators=[])
+    transid= StringField('transporter id', validators=[Length(1, 1024)])
+    submit6= SubmitField('Submit')  
+class item_price(FlaskForm):
+    price = DecimalField('new price offered ', validators=[])
+    cropid= StringField('shopvendor id', validators=[Length(1, 1024)])
+    submit7= SubmitField('Submit') 
 class AddFarmer(FlaskForm):
     name= StringField('Name', validators=[DataRequired(), Length(1, 1024)])
     contact= IntegerField('Contact', validators=[DataRequired()])

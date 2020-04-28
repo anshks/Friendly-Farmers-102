@@ -1,8 +1,8 @@
 from app import ( app, )
 import random
 from flask import ( render_template, redirect, url_for, flash, g )
-from app.forms import ( Addtrans,Addbank,AddLoan,AddShopInv,AddStoragefac,AddStorageProvider, AddTransporter, AddCrop, AddShopVendor, AddFarmer, AddLand, AddLectureForm, AddExecutionForm, AddExamForm )
-from app.query_helper import ( shop_inv, storage_provider_auth, shopvendor_auth, crop_sum, crop_price, bank_rateofff, query_db, insert, Pagination )
+from app.forms import ( password,authorize_farmer,authorize_bank,authorize_transporter,authorize_shopvendor,rateoffr_bank,price_transporter,item_price,Addtrans,Addbank,AddLoan,AddShopInv,AddStoragefac,AddStorageProvider, AddTransporter, AddCrop, AddShopVendor, AddFarmer, AddLand, AddLectureForm, AddExecutionForm, AddExamForm )
+from app.query_helper import ( update_authorized_farmer,update_authorized_bank,update_authorized_transporter,update_authorized_shopvendor,update_authorized_shopvendor,update_rateoffr_bank,update_price_transporter,update_price_shopvendor,shop_inv, storage_provider_auth, shopvendor_auth, crop_sum, crop_price, bank_rateofff, query_db, insert, Pagination )
 
 @app.route('/')
 def index():
@@ -112,6 +112,59 @@ def add_shop_inv():
         flash("Successfully added")
         return redirect(url_for('add_shop_inv'))
     return render_template('shop_inv.html',title="shop inventory",form=form)
+@app.route('/Govermentlogin',methods=('GET','POST'))
+def login():
+    form = password()
+    if(form.validate_on_submit()):
+        if(form.passw.data == 'dbms'):
+            flash("login complete")
+            return redirect(url_for('update_queries'))
+        return redirect(url_for('login'))
+    return render_template('login.html',title="Govermentlogin",form=form)
+@app.route('/Govermentchecked',methods=('GET','POST'))
+def update_queries():
+    form = authorize_farmer()
+    form1 = authorize_bank()
+    form2 = authorize_transporter()
+    form3 = authorize_shopvendor()
+    form4 = rateoffr_bank()
+    form5 = price_transporter()
+    form6 = item_price()
+    if(form.validate_on_submit() and form.submit1.data):
+        update_authorized_farmer(1,form.fid.data)
+        flash("Successfully changed")
+        print(form.fid.data)
+        return redirect(url_for('update_queries'))
+    if(form1.validate_on_submit() and form1.submit2.data):
+        update_authorized_bank(1,form1.bid.data)
+        flash("Successfully changed")
+        print(form1.bid.data)
+        return redirect(url_for('update_queries'))
+    if(form2.validate_on_submit() and form2.submit3.data):
+        update_authorized_transporter(1,form2.transid.data)
+        flash("Successfully changed")
+        print(form2.transid.data)
+        return redirect(url_for('update_queries'))
+    if(form3.validate_on_submit() and form3.submit4.data):
+        update_authorized_shopvendor(1,form3.svid.data)
+        flash("Successfully changed")
+        print(form3.svid.data)
+        return redirect(url_for('update_queries'))
+    if(form4.validate_on_submit() and form4.submit5.data):
+        update_rateoffr_bank(float(form4.rateoffr.data),form4.bid.data)
+        flash("Successfully changed")
+        print(float(form4.rateoffr.data),form4.bid.data)
+        return redirect(url_for('update_queries'))
+    if(form5.validate_on_submit() and form5.submit6.data):
+        update_price_transporter(float(form5.price.data),form5.transid.data)
+        flash("Successfully changed")
+        print(float(form5.price.data),form5.transid.data)
+        return redirect(url_for('update_queries'))
+    if(form6.validate_on_submit() and form6.submit7.data):
+        update_price_shopvendor(float(form6.price.data),form6.cropid.data)
+        flash("Successfully changed")
+        return redirect(url_for('update_queries'))
+    return render_template('gov.html',title="shop inventory",form=form,form1=form1,form2=form2,form3=form3,form4=form4,form5=form5,form6=form6)
 @app.route('/addloan',methods=('GET','POST'))
 def add_loan():
     form = AddLoan()

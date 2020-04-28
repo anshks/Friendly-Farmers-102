@@ -1,0 +1,59 @@
+{% extends "index.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block app_content %}
+<h1 class="text-center">UPDATE</h1>
+<div class="center-block">
+    <form method=post action="">
+        {{ form.hidden_tag() }}
+        <dl>
+            {{ render_field(form.fid) }}
+            {{ render_field(form.submit1) }}
+        </dl>
+    </form>
+    <form method=post action="">
+        {{ form1.hidden_tag() }}
+        <dl>
+            {{ render_field(form1.bid) }}
+            {{ render_field(form1.submit2) }}
+        </dl>
+    </form>
+    <form method=post action="">
+        {{ form2.hidden_tag() }}
+        <dl>
+            {{ render_field(form2.transid) }}
+            {{ render_field(form2.submit3) }}
+        </dl>
+    </form>
+    <form method=post action="">
+        {{ form3.hidden_tag() }}
+        <dl>
+            {{ render_field(form3.svid) }}
+            {{ render_field(form3.submit4) }}
+        </dl>
+    </form>
+    <form method=post action="">
+        {{ form4.hidden_tag() }}
+        <dl>
+            {{ render_field(form4.rateoffr) }}
+            {{ render_field(form4.bid) }}
+            {{ render_field(form4.submit5) }}
+        </dl>
+    </form>
+    <form method=post action="">
+        {{ form5.hidden_tag() }}
+        <dl>
+            {{ render_field(form5.price) }}
+            {{ render_field(form5.transid) }}
+            {{ render_field(form5.submit6) }}
+        </dl>
+    </form>
+    <form method=post action="">
+        {{ form6.hidden_tag() }}
+        <dl>
+            {{ render_field(form6.price) }}
+            {{ render_field(form6.cropid) }}
+            {{ render_field(form6.submit7) }}
+        </dl>
+    </form>
+</div>
+{% endblock %}

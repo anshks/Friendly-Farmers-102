@@ -3,9 +3,11 @@ from app import ( app )
 from flask import ( current_app, g )
 from math import ( ceil )
 from geopy.geocoders import ( Nominatim )
-import matplotlib.pyplot as plt
 import numpy as np
 
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('Agg')
 nom = Nominatim()
 
 def barGraph(X, Y, xLabel, yLabel,name):
