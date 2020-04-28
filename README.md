@@ -1,4 +1,4 @@
-# Friendly Farmers 101  <img src="https://cdn.worldvectorlogo.com/logos/flask.svg" height="30">
+# Friendly Farmers 101          <img src="https://cdn.worldvectorlogo.com/logos/flask.svg" height="30"> 
 
 ### About this Repository
 
