@@ -108,9 +108,18 @@ def init_db():
         check_transporter()
         check_authorities()
         check_shopvendor()
-        bank_rateofff(1)
-        bank_rateofff(0)
-        shopvendor_auth()
+        bank_rtf = []
+        crop_price1 = []
+        for i in range(3):
+            bank_rtf.append(bank_rateofff(i))
+            crop_price1.append(crop_price(i))
+        crop_sum1 = crop_sum()
+        shopvendor_auth1 = shopvendor_auth()
+        storage_auth1 = storage_provider_auth()
+        #SVID nikalde form se yaha
+        SVID = "SV_191"
+        shop_inv1 = shop_inv(SVID)
+        #display yeha se shuru hai
 
 
 def create_the_databse():
@@ -711,8 +720,8 @@ def storage_provider_auth():
     s = ("select count(*) from storageprov  where authorized=1")
     result = getresult(s)
     l[1] = result[0][0]
-    pieChart(["authorized","not_authorized"],l,"storageprovider")
-    return "storage_provider_auth.png"
+    pieChart(["authorized","not_authorized"],l,"storage_provider_auth")
+    return "storage_provider_auth_pie.png"
 def shopvendor_auth():
     s = ("select count(*) from shopvendor where authorized=0")
     result = getresult(s)
@@ -722,8 +731,8 @@ def shopvendor_auth():
     result = getresult(s)
     l[1] = result[0][0]
     total = l[0] + l[1]
-    pieChart(["authorized","unauthorized"],l,"shopvendor,auth")
-    return "shopvendor_auth.png"
+    pieChart(["authorized","unauthorized"],l,"shopvendor_auth")
+    return "shopvendor_auth_pie.png"
 def crop_sum():
     s = ("select cname from crop")
     res = getresult(s)
@@ -734,11 +743,12 @@ def crop_sum():
         res1 = getresult(s)
         ret.append([c_name,res1[0][0]])
     Xs = []
-    Ys = []*3
+    Ys = [[]]
     for i in ret:
         Xs.append(i[0])
         Ys[0].append(i[1])
-    barGraph(Xs,Ys,"Crop_name","quantity_sum","crop_quantity")
+    print(Xs,Ys)
+    barGraph(Xs,Ys[0],"Crop_name","quantity_sum","crop_quantity")
     return "crop_quantity_bar.png"
 def crop_price(index):
     s = ("select cname from crop")
@@ -765,8 +775,10 @@ def crop_price(index):
         add.append(stdev**2)
         ret.append(add)
     Xs = []
-    Ys = []*3
+    Ys = [[],[],[],[]]
+    print(Ys)
     for i in ret:
+        print(i)
         Xs.append(i[0])
         Ys[0].append(i[1])
         Ys[1].append(i[2]);
@@ -780,6 +792,22 @@ def crop_price(index):
         ylabel = "variance"
     barGraph(Xs,Ys[index],"bid",ylabel,"crop_price_" + ylabel)
     return "crop_price_" + ylabel + "_bar.png"
+def shop_inv(SVID):
+    s = ("select item_name,item_price from shop_inv where svid='{}'").format(SVID)
+    res = getresult(s)
+    Xs = []
+    Ys = []
+    for i in res:
+        sum1 = 0
+        cnt = 0
+        for j in res:
+            if(j[0] == i[0]):
+                sum1 += j[1]
+                cnt += 1
+        Ys.append(sum1/cnt)
+        Xs.append(i[0])
+    pieChart(Xs,Ys,"shopvendor_item_mean")
+    return "shopvendor_item_mean_pie.png"
 def bank_rateofff(index):
     s = ("select bid from bank")
     res = getresult(s)

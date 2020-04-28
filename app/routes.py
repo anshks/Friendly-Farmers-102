@@ -4,6 +4,20 @@ from flask import ( render_template, redirect, url_for, flash, g )
 from app.forms import ( AddStorageProvider, AddTransporter, AddCrop, AddShopVendor, AddFarmer, AddLand, AddLectureForm, AddExecutionForm, AddExamForm )
 from app.query_helper import ( query_db, insert, Pagination )
 
+def stats():
+    bank_rateoff = []
+    crop_price1 = []
+    for i in range(3):
+        bank.append(bank_rateoff(i))
+        crop_price1.append(crop_price(i))
+    crop_sum1 = crop_sum()
+    shopvendor_auth1 = shopvendor_auth()
+    storage_auth1 = storage_provider_auth()
+    #SVID nikalde form se yaha
+    SVID = ""
+    shop_inv1 = shop_inv(SVID)
+    #display yeha se shuru hai
+
 @app.route('/')
 def index():
     return render_template('index.html')
