@@ -3,8 +3,28 @@ from app import ( app )
 from flask import ( current_app, g )
 from math import ( ceil )
 from geopy.geocoders import ( Nominatim )
+import matplotlib.pyplot as plt
+import numpy as np
+
 nom = Nominatim()
 
+def barGraph(X, Y, xLabel, yLabel,name):
+    # X, Y -> list, xLabel,yLabel -> string
+    plt.bar(X, Y, align='center', alpha=0.5)
+    plt.xticks(X)
+    plt.ylabel(xLabel)
+    plt.title(yLabel)
+    plt.savefig(name + "_bar.png")
+    plt.close()
+
+def pieChart(labels, sizes,name):
+    # labels, sizes -> list
+    patches, texts = plt.pie(sizes)
+    plt.legend(patches, labels, loc="best")
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.savefig(name + "_pie.png")
+    plt.close()
 def address_to_latlong(address):
 	result = nom.geocode(address)
 	lat = result.latitude
@@ -57,12 +77,12 @@ def insert(table, fields=(), values=()):
         ', '.join(fields),
         ', '.join(['?'] * len(values))
     )
-    print('Executing insert query for', table, '\n')
+    print('Executing insert query for', table)
     cur.execute(query, values)
     db.commit()
     id = cur.lastrowid
     cur.close()
-    print('Inserted the query for', table, '\n')
+    print('Inserted for the', table, ', the following: ', values)
     return id
 
 # Initiliaze the database
@@ -88,6 +108,9 @@ def init_db():
         check_transporter()
         check_authorities()
         check_shopvendor()
+        bank_rateofff(1)
+        bank_rateofff(0)
+        shopvendor_auth()
 
 
 def create_the_databse():
@@ -125,6 +148,16 @@ def create_the_databse():
     printalltables('fspt')
     insertintoftt()
     printalltables('ftt')
+    insertintobank()
+    insertintofsvt()
+    insertintostoragefacloc()
+    insertintospstorage()
+    insertintostoragecrop()
+    printalltables('bank')
+    printalltables('fsvt')
+    printalltables('storagefacloc')
+    printalltables('spstorage')
+    printalltables('storagecrop')
 
 # pagination
 
@@ -179,7 +212,6 @@ def insertintotrasaction():
     insert('transactions', ('transid', 'amount', 'method'), ('TR_110', 200000.00, 'Cash'))
     insert('transactions', ('transid', 'amount', 'method'), ('TR_111', 400000.00, 'Online'))
     insert('transactions', ('transid', 'amount', 'method'), ('TR_112', 180000.00, 'Cash'))
-    
 
 def insertintoloan():
     insert('loan', ('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'), ('L_1586', 10.35, '22-04-10', 'F_102', 13500.00, 11000.00))
@@ -197,9 +229,9 @@ def insertintoland():
     insert('land', ('lid', 'areaocc', 'lat', 'long'), ('LD_3498',23.01,28.598238,77.207236))
 
 def insertintoshopv():
-    insert('shopvendor', ('svid','lat','long','authorized'), ('SV_191',28.605133,77.202709,1))
-    insert('shopvendor', ('svid','lat','long','authorized'), ('SV_192',28.604116,77.204254,1))
-    insert('shopvendor', ('svid','lat','long','authorized'), ('SV_193',28.598012,77.204812,0))
+    insert('shopvendor', ('svid','svname','scontact','lat','long','authorized'), ('SV_191','Shop Benndor', 9898989898, 28.605133,77.202709,1))
+    insert('shopvendor', ('svid','svname','scontact','lat','long','authorized'), ('SV_192','Shop Vendoe', 9898989898, 28.604116,77.204254,1))
+    insert('shopvendor', ('svid','svname','scontact','lat','long','authorized'), ('SV_193','Shop LOL', 9898989898, 28.598012,77.204812,0))
 
 def insertintocrop():
     insert('crop', ('cid','cname','units','typeoffarming','quantity','price'), ('C_101','rice','kg','commercial farming',1.6,30))
@@ -264,6 +296,31 @@ def insertintoftt():
     insert('ftt', ('transid','fid','tid'), ('TR_110','F_102','T_101'))
     insert('ftt', ('transid','fid','tid'), ('TR_111','F_104','T_102'))
     insert('ftt', ('transid','fid','tid'), ('TR_112','F_105','T_103'))
+
+def insertintobank():
+    insert('bank', ('bid', 'lat', 'long', 'rateoffr', 'authorized'), ("B_101", 28.614929, 77.217944, 1500, 1))
+    insert('bank', ('bid', 'lat', 'long', 'rateoffr', 'authorized'), ("B_103", 28.614062, 77.220604, 2309, 0))
+    insert('bank', ('bid', 'lat', 'long', 'rateoffr', 'authorized'), ("B-104", 28.610445, 77.222106, 3400, 1))
+
+def insertintostoragefacloc():
+    insert('storagefacloc', ('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'), ('S_145', 'dry', 146, 'kg', 150, 28.600122, 77.210691, 'poultry', 23, 1))
+    insert('storagefacloc', ('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'), ('S_132', 'room temperature', 2345, 'litre', 450, 28.599218, 77.215326, 'poultry', 300, 0))
+    insert('storagefacloc', ('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'), ('S_123', 'cold', 560, 'kg', 786, 28.594508, 77.215540, 'wheat', '20', 1))
+
+def insertintofsvt():
+    insert('fsvt', ('transid', 'fid', 'svid'), ('TR_101', 'F_102', 'SV_191'))
+    insert('fsvt', ('transid', 'fid', 'svid'), ('TR_102', 'F_104', 'SV_192'))
+    insert('fsvt', ('transid', 'fid', 'svid'), ('TR_103', 'F_105', 'SV_193'))
+
+def insertintospstorage():
+    insert('spstorage', ('sid', 'spid'), ('S_145', 'SP_101'))
+    insert('spstorage', ('sid', 'spid'), ('S_132', 'SP_102'))
+    insert('spstorage', ('sid', 'spid'), ('S_123', 'SP_103'))
+
+def insertintostoragecrop():
+    insert('storagecrop', ('sid', 'cid'), ('S_145', 'C_101'))
+    insert('storagecrop', ('sid', 'cid'), ('S_132', 'C_102'))
+    insert('storagecrop', ('sid', 'cid'), ('S_123', 'C_103'))
 
 def farmer_nearby_crop_price(crop_name,lat,long):
     lat_max = lat + 20
@@ -591,3 +648,126 @@ def get_semester_with_lowest_avg_mark(title):
         "where lecture.name =? group by semester limit 1;", [title])
 
     return best_semester
+def getresult(s):
+    return query_db(s)
+
+
+def storage_provider_auth():
+    s = ("select count(*) from storageprov where authorized=0")
+    result = getresult(s)
+    l = [0,0]
+    l[0] = result[0][0]
+    s = ("select count(*) from storageprov  where authorized=1")
+    result = getresult(s)
+    l[1] = result[0][0]
+    pieChart(["authorized","not_authorized"],l,"storageprovider")
+    return "storage_provider_auth.png"
+def shopvendor_auth():
+    s = ("select count(*) from shopvendor where authorized=0")
+    result = getresult(s)
+    l = [0,0]
+    l[0] = result[0][0]
+    s = ("select count(*) from shopvendor  where authorized=1")
+    result = getresult(s)
+    l[1] = result[0][0]
+    total = l[0] + l[1]
+    pieChart(["authorized","unauthorized"],l,"shopvendor,auth")
+    return "shopvendor_auth.png"
+def crop_sum():
+    s = ("select cname from crop")
+    res = getresult(s)
+    ret = []
+    for i in res:
+        c_name = i[0]
+        s = ("select sum(quantity) from crop where cname='{}'").format(c_name)
+        res1 = getresult(s)
+        ret.append([c_name,res1[0][0]])
+    Xs = []
+    Ys = []*3
+    for i in ret:
+        Xs.append(i[0])
+        Ys[0].append(i[1])
+    barGraph(Xs,Ys,"Crop_name","quantity_sum","crop_quantity")
+    return "crop_quantity_bar.png"
+def crop_price(index):
+    s = ("select cname from crop")
+    res = getresult(s)
+    ret = []
+    for i in res:
+        c_name = i[0]
+        add = []
+        s = ("select sum(price) from crop where cname='{}'").format(c_name)
+        res1 = getresult(s)
+        s = ("select count(*) from crop where cname='{}'").format(c_name)
+        res2 = getresult(s)
+        len2 = res2[0][0]
+        mean1 = res1[0][0]/res2[0][0]
+        add.append(c_name)
+        s = ("select quantity from crop where cname='{}'").format(c_name)
+        res1 = getresult(s)
+        stdev = 0
+        for j in res1:
+            stdev += (j[0] - mean1)**2/(len2)
+        stdev = stdev**(0.5)
+        add.append(stdev)
+        add.append(mean1)
+        add.append(stdev**2)
+        ret.append(add)
+    Xs = []
+    Ys = []*3
+    for i in ret:
+        Xs.append(i[0])
+        Ys[0].append(i[1])
+        Ys[1].append(i[2]);
+        Ys[2].append(i[3]);
+    ylabel = ""
+    if(index == 0):
+        ylabel = "stdev"
+    elif(index == 1):
+        ylabel = "mean"
+    else:
+        ylabel = "variance"
+    barGraph(Xs,Ys[index],"bid",ylabel,"crop_price_" + ylabel)
+    return "crop_price_" + ylabel + "_bar.png"
+def bank_rateofff(index):
+    s = ("select bid from bank")
+    res = getresult(s)
+    ret = []
+    for i in res:
+        bank_id = i[0]
+        add = []
+        s = ("select sum(rateoffr) from bank where bid='{}'").format(bank_id)
+        res1 = getresult(s)
+        s = ("select count(*) from bank where bid='{}'").format(bank_id)
+        res2 = getresult(s)
+        len2 = res2[0][0]
+        mean1 = res1[0][0]/res2[0][0]
+        add.append(bank_id)
+        s = ("select rateoffr from bank where bid='{}'").format(bank_id)
+        res1 = getresult(s)
+        stdev = 0
+        for j in res1:
+            stdev += (j[0] - mean1)**2/(len2)
+        stdev = stdev**(0.5)
+        add.append(stdev)
+        add.append(mean1)
+        add.append(stdev**2)
+        ret.append(add)
+    Xs = []
+    Ys = [[],[],[],[]]
+    print(Ys)
+    for i in ret:
+        Xs.append(i[0])
+        # print(i)
+        Ys[0].append(i[1])
+        Ys[1].append(i[2]);
+        Ys[2].append(i[3]);
+    ylabel = ""
+    if(index == 0):
+        ylabel = "stdev"
+    elif(index == 1):
+        ylabel = "mean"
+    else:
+        ylabel = "variance"
+    barGraph(Xs,Ys[index],"bid",ylabel,"bank_rateoff_" + ylabel)
+    return "bank_rateoff_" + ylabel + "_bar.png"

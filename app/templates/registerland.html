@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block app_content %}
+<h1 class="text-center">Farmers</h1>
+<div class="center-block">
+    <form method=post action="">
+        {{ form.hidden_tag() }}
+        <dl>
+            {{ render_field(form.areaocc) }}
+            {{ render_field(form.lat) }}
+            {{ render_field(form.long) }}
+            {{ render_field(form.submit) }}
+        </dl>
+    </form>
+</div>
+<script>
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+    function success(pos) {
+        var crd = pos.coords;
+        document.getElementById('lat').value= crd.latitude;
+        document.getElementById('long').value= crd.longitude;
+        console.log('Your current position is:');
+        console.log(`Latitude : ${crd.latitude}`);
+        console.log(`Longitude: ${crd.longitude}`);
+        console.log(`More or less ${crd.accuracy} meters.`);
+    }
+    function error(err) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options);
+</script>
+{% endblock %}

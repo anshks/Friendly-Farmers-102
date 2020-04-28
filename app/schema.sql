@@ -56,6 +56,8 @@ DROP TABLE IF EXISTS shopvendor;
 CREATE TABLE IF NOT EXISTS shopvendor
 (
   svid              string not null,
+  svname            string not null,
+  scontact          integer(10) not null,
   lat               decimal not null,
   long              decimal not null,
   authorized        boolean default false,
