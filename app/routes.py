@@ -309,6 +309,11 @@ def add_storage_provider():
     print('Total records before loading storageprov: ', store_length[0][0])
     return render_template('storageprov.html', title="Storageprov", form=form)
 
+
+@app.route('/info', methods=('GET', 'POST'))
+def view_pre_info():
+    return render_template('pre_info.html')
+
 @app.route('/info/<string:page>', methods=('GET', 'POST'))
 def view_info(page):
     all_values = query_db("select * from '{}'".format(page))
