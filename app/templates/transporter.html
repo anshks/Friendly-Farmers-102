@@ -32,10 +32,10 @@
         var crd = pos.coords;
         document.getElementById('lat').value= crd.latitude;
         document.getElementById('long').value= crd.longitude;
-        console.log('Your current position is:');
-        console.log(`Latitude : ${crd.latitude}`);
-        console.log(`Longitude: ${crd.longitude}`);
-        console.log(`More or less ${crd.accuracy} meters.`);
+        //console.log('Your current position is:');
+        //console.log(`Latitude : ${crd.latitude}`);
+        //console.log(`Longitude: ${crd.longitude}`);
+        //console.log(`More or less ${crd.accuracy} meters.`);
     }
     function error(err) {
         console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -44,9 +44,9 @@
     setTimeout(()=>{
         let all_variables= document.getElementsByTagName('input');
         for(let i in all_variables){
-            console.log(i);
+            //console.log(i);
             if(i<all_variables.length-1){
-                console.log(i+'Executed');
+                //console.log(i+'Executed');
                 all_variables[i].classList.add('form-control');
                 all_variables[i].style.maxWidth= '320px';
             }

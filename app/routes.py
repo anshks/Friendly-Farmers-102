@@ -272,7 +272,7 @@ def add_trans():
             if(form.identity_from.data == 'storage provider'):
                 insert('fspt',('transid','fid','spid'),(new_id,form.to_id.data,form.from_id.data))
                 return redirect(url_for('add_trans'))
-        flash("Successfully added")
+        flash("Successfully Added")
     return render_template('trans.html',title="trans",form=form)
 
 @app.route('/transporter', methods=('GET', 'POST'))
@@ -309,43 +309,14 @@ def add_storage_provider():
     print('Total records before loading storageprov: ', store_length[0][0])
     return render_template('storageprov.html', title="Storageprov", form=form)
 
-@app.route('/exams/', defaults={'page': 1}, methods=('GET', 'POST'))
-@app.route('/exams/page/<int:page>', methods=('GET', 'POST'))
-def view_exams(page):
-    total_count = query_db("select count(shortcut) from exam", one=True)[0]
-    pagination = Pagination(page, total_count, per_page=3)
-    exams = query_db( "select shortcut, name, semester, n_tries, mark, degree,kind " "from exam join lecture using (shortcut) order by shortcut,semester,n_tries limit ?,?", ((page - 1) * pagination.per_page, pagination.per_page))
-    next_page = url_for('view_exams', page=page + 1) if pagination.has_next else None
-    prev_page = url_for('view_exams', page=page - 1) if pagination.has_prev else None
-    return render_template('view_exams.html', exams=exams, next_page=next_page, prev_page=prev_page, title="Exams" )
-
-@app.route('/add_exam', methods=('GET', 'POST'))
-def add_exam():
-    form = AddExamForm()
-    executions = query_db("select shortcut, semester from execution")
-    form.executions.choices = [('?'.join(map(str, k)), "{} in semester {}".format(*k)) for k in executions]
-
-    if form.validate_on_submit():
-        shortcut, semester = form.executions.data.split('?')
-        if len(query_db("select 1 from exam where shortcut=? and semester=? and n_tries=?", (shortcut, semester, form.n_tries.data))) > 0:
-            flash("Exam already exists!")
-            return redirect(url_for('add_exam'))
-        insert('exam', ('shortcut', 'semester', 'n_tries', 'mark', 'degree', 'kind'), (shortcut, semester, form.n_tries.data, form.mark.data, form.degree.data, form.kind.data))
-        flash("Successfully added exam {}!".format(shortcut))
-        return redirect(url_for('view_exams'))
-    return render_template('add_exam.html', title="Exams", form=form )
-
-@app.route('/execution', methods=('GET', 'POST'))
-def add_execution():
-    form = AddExecutionForm()
-    lectures = query_db("select shortcut,name from lecture")
-    form.shortcut.choices = [(k[0], k[1]) for k in lectures]
-
-    if form.validate_on_submit():
-        insert('execution', ('shortcut', 'lecturer', 'semester'), (form.shortcut.data, form.lecturer.data, form.semester.data))
-        flash("Successfully added execution!")
-        return redirect(url_for('add_execution'))
-    return render_template('add_execution.html', title="Executions", form=form)
+@app.route('/info/<string:page>', methods=('GET', 'POST'))
+def view_info(page):
+    all_values = query_db("select * from '{}'".format(page))
+    total_count = query_db("select COUNT(*) from '{}'".format(page))[0][0]
+    print('--------------> Display info for:', page)
+    print('--------------> Total values are:', all_values)
+    print('--------------> Total data is:', total_count)
+    return render_template('info.html', display= all_values, name_of_table= page)
 
 # administration
 @app.teardown_appcontext
