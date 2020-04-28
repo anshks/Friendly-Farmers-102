@@ -5,15 +5,137 @@
 <table class="table">
     <thead>
     <tr>
-        <!-- {% if name_of_table %} -->
-        <th>Shortcut</th>
-        <!-- {% endif %} -->
-        <th>Lecture</th>
-        <th>Semester</th>
-        <th>Try</th>
-        <th>Grade</th>
-        <th>Degree</th>
-        <th>Kind</th>
+        {% if 'farmer' in name_of_table %}
+        <th>fid</th>
+        <th>fname</th>
+        <th>fcontact</th>
+        <th>lat</th>
+        <th>long</th>
+        <th>authorized</th>
+        {% endif %}
+        {% if 'land' in name_of_table %}
+        <th>lid</th>
+        <th>areaocc</th>
+        <th>lat</th>
+        <th>long</th>
+        {% endif %}
+        {% if 'farmerland' in name_of_table %}
+        <th>fid</th>
+        <th>lid</th>
+        {% endif %}
+        {% if 'crop' in name_of_table %}
+        <th>cid</th>
+        <th>cname</th>
+        <th>units</th>
+        <th>typeoffarming</th>
+        <th>quantity</th>
+        <th>price</th>
+        {% endif %}
+        {% if 'landcrop' in name_of_table %}
+        <th>cid</th>
+        <th>lid</th>
+        {% endif %}
+        {% if 'shopvendor' in name_of_table %}
+        <th>svid</th>
+        <th>svname</th>
+        <th>scontact</th>
+        <th>lat</th>
+        <th>long</th>
+        <th>authorized</th>
+        {% endif %}
+        {% if 'svcrop' in name_of_table %}
+        <th>svid</th>
+        <th>cid</th>
+        <th>amount_bought</th>
+        {% endif %}
+        {% if 'storagecrop' in name_of_table %}
+        <th>sid</th>
+        <th>cid</th>
+        {% endif %}
+        {% if 'shop_inv' in name_of_table %}
+        <th>svid</th>
+        <th>item_name</th>
+        <th>item_price</th>
+        <th>units</th>
+        {% endif %}
+        {% if 'transporter' in name_of_table %}
+        <th>tid</th>
+        <th>tname</th>
+        <th>price</th>
+        <th>mintwht</th>
+        <th>maxtwht</th>
+        <th>lat</th>
+        <th>long</th>
+        <th>resavl</th>
+        <th>authorized</th>
+        {% endif %}
+        {% if 'fsvt' in name_of_table %}
+        <th>transid</th>
+        <th>fid</th>
+        <th>svid</th>
+        {% endif %}
+        {% if 'ftt' in name_of_table %}
+        <th>transid</th>
+        <th>fid</th>
+        <th>tid</th>
+        {% endif %}
+        {% if 'transcrop' in name_of_table %}
+        <th>tid</th>
+        <th>cid</th>
+        {% endif %}
+        {% if 'storageprov' in name_of_table %}
+        <th>spid</th>
+        <th>sname</th>
+        <th>contact</th>
+        <th>lat</th>
+        <th>long</th>
+        <th>authorized</th>
+        {% endif %}
+        {% if 'spstorage' in name_of_table %}
+        <th>sid</th>
+        <th>spid</th>
+        {% endif %}
+        {% if 'transactions' in name_of_table %}
+        <th>transid</th>
+        <th>amount</th>
+        <th>method</th>
+        {% endif %}
+        {% if 'bank' in name_of_table %}
+        <th>bid</th>
+        <th>lat</th>
+        <th>long</th>
+        <th>rateoffr</th>
+        <th>authorized</th>
+        {% endif %}
+        {% if 'bankfloan' in name_of_table %}
+        <th>lid</th>
+        <th>bid</th>
+        <th>fid</th>
+        {% endif %}
+        {% if 'loan' in name_of_table %}
+        <th>lid</th>
+        <th>rateoffr</th>
+        <th>dateoffr</th>
+        <th>offrto</th>
+        <th>iniamt</th>
+        <th>pendamt</th>
+        {% endif %}
+        {% if 'storagefacloc' in name_of_table %}
+        <th>sid</th>
+        <th>suitcond</th>
+        <th>size</th>
+        <th>unit</th>
+        <th>price</th>
+        <th>lat</th>
+        <th>long</th>
+        <th>typeoffarming</th>
+        <th>spaceleft</th>
+        <th>availability</th>
+        {% endif %}
+        {% if 'loantrans' in name_of_table %}
+        <th>lid</th>
+        <th>transid</th>
+        {% endif %}
     </tr>
     </thead>
     <tbody>
