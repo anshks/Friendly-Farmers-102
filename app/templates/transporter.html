@@ -1,8 +1,13 @@
 {% extends "index.html" %}
 {% from "_formhelpers.html" import render_field %}
 {% block app_content %}
-<h1 class="text-center">Transporters</h1>
-<div class="center-block">
+<style>
+    input{
+        border-radius: 5px !important;
+    }
+</style>
+<h1 class="text-center text-primary">Transporters</h1>
+<div class="center-block" style="align-items: center; display: flex; justify-content: center;">
     <form method=post action="">
         {{ form.hidden_tag() }}
         <dl>
@@ -36,5 +41,19 @@
         console.warn(`ERROR(${err.code}): ${err.message}`);
     }
     navigator.geolocation.getCurrentPosition(success, error, options);
+    setTimeout(()=>{
+        let all_variables= document.getElementsByTagName('input');
+        for(let i in all_variables){
+            console.log(i);
+            if(i<all_variables.length-1){
+                console.log(i+'Executed');
+                all_variables[i].classList.add('form-control');
+                all_variables[i].style.maxWidth= '320px';
+            }
+        }
+        document.getElementById('submit').classList.add('btn', 'btn-info');
+        document.getElementById('submit').style.fontSize= '1.5em';
+        document.getElementById('submit').style.backgroundColor= '#17a2b8 !important';
+    }, 100);
 </script>
 {% endblock %}

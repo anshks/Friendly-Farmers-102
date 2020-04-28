@@ -14,7 +14,7 @@ def barGraph(X, Y, xLabel, yLabel,name):
     plt.xticks(X)
     plt.ylabel(xLabel)
     plt.title(yLabel)
-    plt.savefig(name + "_bar.png")
+    plt.savefig('./app/static/'+name+"_bar.png")
     plt.close()
 
 def pieChart(labels, sizes,name):
@@ -23,7 +23,7 @@ def pieChart(labels, sizes,name):
     plt.legend(patches, labels, loc="best")
     plt.axis('equal')
     plt.tight_layout()
-    plt.savefig(name + "_pie.png")
+    plt.savefig('./app/static/'+name+"_pie.png")
     plt.close()
 def address_to_latlong(address):
 	result = nom.geocode(address)
@@ -837,10 +837,9 @@ def bank_rateofff(index):
     print(Ys)
     for i in ret:
         Xs.append(i[0])
-        # print(i)
         Ys[0].append(i[1])
-        Ys[1].append(i[2]);
-        Ys[2].append(i[3]);
+        Ys[1].append(i[2])
+        Ys[2].append(i[3])
     ylabel = ""
     if(index == 0):
         ylabel = "stdev"
