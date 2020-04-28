@@ -114,5 +114,5 @@ Bug reports can be made on our github issues. If you think something isn't worki
 - [Ansh Sharma](https://github.com/anshks)
 - [Anunay Yadav](https://github.com/Anunay-Yadav)
 - [Mukul Tomar](https://github.com/Tomcod)
-- [Rishi Raj Jain](https://github.com/digitalPlayers1125)
+- [Rishi Raj Jain](https://github.com/digitalPlayer1125)
 - [Ruhma Mehek Khan](https://github.com/ruhmamehek)
