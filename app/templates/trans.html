@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block app_content %}
+<h1 class="text-center">loan</h1>
+<div class="center-block">
+    <form method=post action="">
+        {{ form.hidden_tag() }}
+        <dl>
+            {{ render_field(form.amount) }}
+            {{ render_field(form.method) }}
+            {{ render_field(form.from_id) }}
+            {{ render_field(form.to_id) }}
+            {{ render_field(form.identity_from) }}
+            {{ render_field(form.identity_to) }}
+            {{ render_field(form.submit) }}
+        </dl>
+    </form>
+</div>
+{% endblock %}

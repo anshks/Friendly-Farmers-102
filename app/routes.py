@@ -1,7 +1,7 @@
 from app import ( app, )
 import random
 from flask import ( render_template, redirect, url_for, flash, g )
-from app.forms import ( AddStorageProvider, AddTransporter, AddCrop, AddShopVendor, AddFarmer, AddLand, AddLectureForm, AddExecutionForm, AddExamForm )
+from app.forms import ( Addtrans,Addbank,AddLoan,AddShopInv,AddStoragefac,AddStorageProvider, AddTransporter, AddCrop, AddShopVendor, AddFarmer, AddLand, AddLectureForm, AddExecutionForm, AddExamForm )
 from app.query_helper import ( shop_inv, storage_provider_auth, shopvendor_auth, crop_sum, crop_price, bank_rateofff, query_db, insert, Pagination )
 
 @app.route('/')
@@ -25,12 +25,12 @@ def stats():
 def add_farmer():
     form = AddFarmer()
     if form.validate_on_submit():
-        print('\n\nIncoming Data: ', (form.name.data, form.contact.data, float(form.lat.data), float(form.long.data), 0))
+        print('\n\nIncoming Data: ', (form.name.data, int(form.contact.data), float(float(form.lat.data)), float(float(form.long.data)), 0))
         store_length= query_db('Select COUNT(*) from farmer')
         print('Total records before a farmer was added: ', store_length[0][0])
         new_id= 'F_'+str(int(store_length[0][0])+1)
         print('New ID allocated to the transporter is: ', new_id)
-        insert('farmer', ('fid', 'fname', 'fcontact', 'lat', 'long', 'authorized'), (new_id, form.name.data, form.contact.data, float(form.lat.data), float(form.long.data), 0))
+        insert('farmer', ('fid', 'fname', 'fcontact', 'lat', 'long', 'authorized'), (new_id, form.name.data, int(form.contact.data), float(float(form.lat.data)), float(float(form.long.data)), 0))
         print('All records for the farmers are: ')
         print(query_db("Select * from farmer"))
         flash("Successfully added new farmer {}!".format(form.name.data))
@@ -41,12 +41,12 @@ def add_farmer():
 def add_shopvendor():
     form = AddShopVendor()
     if form.validate_on_submit():
-        print('\n\nIncoming Data: ', (form.name.data, form.contact.data, float(form.lat.data), float(form.long.data), 0))
+        print('\n\nIncoming Data: ', (form.name.data, int(form.contact.data), float(float(form.lat.data)), float(float(form.long.data)), 0))
         store_length= query_db('Select COUNT(*) from shopvendor')
         print('Total records before a shopvendor was added: ', store_length[0][0])
         new_id= 'SV_'+str(int(store_length[0][0])+1)
         print('New ID allocated to the transporter is: ', new_id)
-        insert('shopvendor', ('svid', 'svname', 'scontact', 'lat', 'long', 'authorized'), (new_id, form.name.data, form.contact.data, float(form.lat.data), float(form.long.data), 0))
+        insert('shopvendor', ('svid', 'svname', 'scontact', 'lat', 'long', 'authorized'), (new_id, form.name.data, int(form.contact.data), float(float(form.lat.data)), float(float(form.long.data)), 0))
         print('All records for the shopvendor are: ')
         print(query_db("Select * from shopvendor"))
         flash("Successfully added new shopvendor {}!".format(form.name.data))
@@ -57,15 +57,17 @@ def add_shopvendor():
 def add_registerland():
     form = AddLand()
     if form.validate_on_submit():
-        print('\n\nIncoming Data: ', (form.areaocc.data, float(form.lat.data), float(form.long.data)))
+        print('\n\nIncoming Data: ', (float(form.areaocc.data), float(float(form.lat.data)), float(float(form.long.data))))
         store_length= query_db('Select COUNT(*) from land')
         print('Total records before a land was added: ', store_length[0][0])
         new_id= 'LD_'+str(int(store_length[0][0])+1)
         print('New ID allocated to the transporter is: ', new_id)
-        insert('land', ('lid', 'areaocc', 'lat', 'long'), (new_id, float(form.areaocc.data), float(form.lat.data), float(form.long.data)))
+        insert('land', ('lid', 'areaocc', 'lat', 'long'), (new_id, float(float(form.areaocc.data)), float(float(form.lat.data)), float(float(form.long.data))))
         print('All records for the land are: ')
         print(query_db("Select * from land"))
         flash("Successfully added new land {}!".format(new_id))
+        insert('landcrop',('cid','lid'),(form.Crop_id.data,new_id))
+        insert('farmerland',('fid','lid'),(form.Farmer_id.data,new_id))
         return redirect(url_for('add_registerland'))
     return render_template('registerland.html', title="Land", form=form)
 
@@ -77,13 +79,85 @@ def add_crop():
         print('Total records before a crop was added: ', store_length[0][0])
         new_id= 'C_'+str(int(store_length[0][0])+1)
         print('New ID allocated to the transporter is: ', new_id)
-        insert('crop', ('cid', 'cname', 'units', 'typeoffarming', 'quantity', 'price'), (new_id, form.name.data, int(form.units.data), form.farming.data, float(form.quantity.data), float(form.price.data)))
+        insert('crop', ('cid', 'cname', 'units', 'typeoffarming', 'quantity', 'price'), (new_id, form.name.data, int(float(form.units.data)), form.farming.data, float(float(form.quantity.data)), float(float(form.price.data))))
         print('All records for the crop are: ')
         print(query_db("Select * from crop"))
+        insert('landcrop',('lid','cid'),(form.land_id.data,new_id))
         flash("Successfully added new crop {}!".format(new_id))
+
         return redirect(url_for('add_crop'))
     return render_template('crop.html', title="Crop", form=form)
 
+@app.route('/addfacility',methods=('GET','POST'))
+def add_storagefac():
+    form = AddStoragefac()
+    if form.validate_on_submit():
+        length = query_db('Select COUNT(*) from storagefacloc')
+        new_id = 'S_' + str(int(length[0][0]) + 1)
+        insert('storagefacloc',('sid', 'suitcond', 'size', 'unit', 'price', 'lat', 'long', 'typeoffarming', 'spaceleft', 'availability'),
+            (new_id,form.suitcond.data,float(form.size.data),form.unit.data,float(form.price.data),float(form.lat.data),float(form.long.data),form.typeoffarming.data,float(float(form.spaceleft.data)),form.availability.data))
+        insert('spstorage',('sid','spid'),(new_id,form.Storageprov_id.data))
+        flash("Successfully added")
+        return redirect(url_for('add_storagefac'))
+    return render_template('storagefac.html',title="storage facility location",form = form)
+@app.route('/addshopinv',methods=('GET','POST'))
+def add_shop_inv():
+    form = AddShopInv()
+    if form.validate_on_submit():
+        length = query_db(('Select COUNT(*) from shop_inv where svid=\'{}\' and item_name=\'{}\'').format(form.svid.data,form.item_name.data))
+        if(length[0][0] == 0):
+            insert('shop_inv',('svid','item_name','item_price','units'),(form.svid.data,form.item_name.data,float(form.item_price.data),float(form.units.data)))
+        else:
+            update_shopinv_amount(float(form.units.data),form.svid.data,form.item_name.data)    
+        flash("Successfully added")
+        return redirect(url_for('add_shop_inv'))
+    return render_template('shop_inv.html',title="shop inventory",form=form)
+@app.route('/addloan',methods=('GET','POST'))
+def add_loan():
+    form = AddLoan()
+    if form.validate_on_submit():
+        length = query_db('Select COUNT(*) from loan')
+        new_id= 'L_'+str(int(length[0][0])+1)
+        insert('loan',('lid', 'rateoffr', 'dateoffr', 'offrto', 'iniamt', 'pendamt'),(new_id,float(form.rateoffr.data),form.date.data,form.fid.data,float(form.iniamt.data),float(form.pendamt.data)))
+        insert('loantrans',('lid','transid'),(new_id,form.trans_id.data))
+        insert('bankfloan',('lid','bid','fid'),(new_id,form.bid.data,form.fid.data))
+        flash("Successfully added")
+        return redirect(url_for('add_loan'))
+    return render_template('loan.html',title="loan",form=form)
+@app.route('/addbank',methods=('GET','POST'))
+def add_bank():
+    form = Addbank()
+    if(form.validate_on_submit()):
+        length = query_db('select count(*) from bank')
+        new_id = 'B_' + str(int(length[0][0]) + 1)
+        insert('bank',('bid', 'lat', 'long', 'rateoffr'),(new_id,float(form.lat.data),float(form.long.data),float(form.rateoffr.data)))
+        flash("Successfully added")
+        return redirect(url_for('add_bank'))
+    return render_template('bank.html',title="bank",form=form)
+@app.route('/addtrans',methods=('GET','POST'))
+def add_trans():
+    form = Addtrans()
+    if(form.validate_on_submit()):
+        length = query_db('select count(*) from transactions')
+        new_id = 'TR_' + str(int(length[0][0])+1)
+        insert('transactions',('transid', 'amount', 'method'),(new_id,float(form.amount.data),form.method.data))
+        if(form.identity_from.data == 'Farmer'):
+            if(form.identity_to.data == 'transporter'):
+                insert('ftt',('transid','fid','tid'),(new_id,form.from_id.data,form.to_id.data))
+            if(form.identity_to.data == 'shopvendor'):
+                insert('fsvt',('transid','fid','svid'),(new_id,form.from_id.data,form.to_id.data))    
+            if(form.identity_to.data == 'storage provider'):
+                insert('fspt',('transid','fid','spid'),(new_id,form.from_id.data,form.to_id.data))
+        else:
+            if(form.identity_from.data == 'transporter'):
+                insert('ftt',('transid','fid','tid'),(new_id,form.to_id.data,form.from_id.data))
+            if(form.identity_from.data == 'shopvendor'):
+                insert('fsvt',('transid','fid','svid'),(new_id,form.to_id.data,form.from_id.data))    
+            if(form.identity_from.data == 'storage provider'):
+                insert('fspt',('transid','fid','spid'),(new_id,form.to_id.data,form.from_id.data))
+                return redirect(url_for('add_trans'))
+        flash("Successfully added")
+    return render_template('trans.html',title="trans",form=form)
 @app.route('/transporter', methods=('GET', 'POST'))
 def add_transporter():
     form = AddTransporter()
@@ -92,7 +166,7 @@ def add_transporter():
         print('Total records before a transporter was added: ', store_length[0][0])
         new_id= 'T_'+str(int(store_length[0][0])+1)
         print('New ID allocated to the transporter is: ', new_id)
-        insert('transporter', ('tid', 'tname', 'price', 'mintwht' , 'maxtwht', 'lat', 'long', 'resavl', 'authorized'), (new_id, form.tname.data, float(form.price.data), float(form.mintwht.data), float(form.maxtwht.data), float(form.lat.data), float(form.long.data), float(form.resavl.data), 0))
+        insert('transporter', ('tid', 'tname', 'price', 'mintwht' , 'maxtwht', 'lat', 'long', 'resavl', 'authorized'), (new_id, form.tname.data, float(float(form.price.data)), float(form.mintwht.data), float(form.maxtwht.data), float(float(form.lat.data)), float(float(form.long.data)), float(form.resavl.data), 0))
         print('All records for the transporter are: ')
         print(query_db("Select * from transporter"))
         flash("Successfully added new transporter {}!".format(new_id))
@@ -109,7 +183,7 @@ def add_storage_provider():
         print('Total records before a storageprov was added: ', store_length[0][0])
         new_id= 'SP_'+str(int(store_length[0][0])+1)
         print('New ID allocated to the storageprov is: ', new_id)
-        insert('storageprov', ('spid','sname','contact','lat','long','authorized'), (new_id, form.name.data, form.contact.data, float(form.lat.data), float(form.long.data), 0))
+        insert('storageprov', ('spid','sname','contact','lat','long','authorized'), (new_id, form.name.data, int(form.contact.data), float(float(form.lat.data)), float(float(form.long.data)), 0))
         print('All records for the storageprov are: ')
         print(query_db("Select * from storageprov"))
         flash("Successfully added new storageprov {}!".format(new_id))

@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block app_content %}
+<h1 class="text-center">Storage Facility Location</h1>
+<div class="center-block">
+    <form method=post action="">
+        {{ form.hidden_tag() }}
+        <dl>
+            {{ render_field(form.suitcond) }}
+            {{ render_field(form.size) }}
+            {{ render_field(form.unit) }}
+            {{ render_field(form.price) }}
+            {{ render_field(form.lat) }}
+            {{ render_field(form.long) }}
+            {{ render_field(form.typeoffarming) }}
+            {{ render_field(form.spaceleft) }}
+            {{ render_field(form.availability) }}
+            {{ render_field(form.Storageprov_id) }}
+            {{ render_field(form.submit) }}
+        </dl>
+    </form>
+</div>
+{% endblock %}

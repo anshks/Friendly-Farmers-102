@@ -37,6 +37,8 @@ def latlong_to_address(lat,long):
 
 # Basic database helper methods
 # Establishing connection with db
+# Basic database helper methods
+# Establishing connection with db
 def get_db():
     """
     get database connection
@@ -77,6 +79,7 @@ def insert(table, fields=(), values=()):
         ', '.join(fields),
         ', '.join(['?'] * len(values))
     )
+    print(query,values)
     print('Executing insert query for', table)
     cur.execute(query, values)
     db.commit()
@@ -340,7 +343,13 @@ def update_authorized_farmer(val, farmer_id):
 def update_contact_farmer(contact_no, farmer_id):
     s= ('update farmer set fcontact={} where fid ="{}"').format(contact_no, farmer_id)
     query_db(s)
-
+def update_shopinv_amount(units,svid,item_name):
+    quant = units
+    s = ('select units from shop_inv where svid ="{}" and item_name="{}"').format(svid,item_name)
+    res = query_db(s)
+    quant += res[0][0]
+    s= ('update shop_inv set item_units={} where svid ="{}" and item_name="{}"').format(quant,svid,item_name)
+    query_db(s)
 
 def  update_authorized_bank(val, bank_id):
     s = ('update bank set authorized = {} where bid = "{}"').format(val, bank_id)
@@ -837,9 +846,10 @@ def bank_rateofff(index):
     print(Ys)
     for i in ret:
         Xs.append(i[0])
+        # print(i)
         Ys[0].append(i[1])
-        Ys[1].append(i[2])
-        Ys[2].append(i[3])
+        Ys[1].append(i[2]);
+        Ys[2].append(i[3]);
     ylabel = ""
     if(index == 0):
         ylabel = "stdev"
