@@ -793,7 +793,7 @@ def crop_price(index):
     barGraph(Xs,Ys[index],"bid",ylabel,"crop_price_" + ylabel)
     return "crop_price_" + ylabel + "_bar.png"
 def shop_inv(SVID):
-    s = ("select item_name,item_price from shop_inv where svid='{}'").format(SVID)
+    s = ("select item_name,units from shop_inv where svid='{}'").format(SVID)
     res = getresult(s)
     Xs = []
     Ys = []
@@ -804,7 +804,7 @@ def shop_inv(SVID):
             if(j[0] == i[0]):
                 sum1 += j[1]
                 cnt += 1
-        Ys.append(sum1/cnt)
+        Ys.append(sum1)
         Xs.append(i[0])
     pieChart(Xs,Ys,"shopvendor_item_mean")
     return "shopvendor_item_mean_pie.png"
