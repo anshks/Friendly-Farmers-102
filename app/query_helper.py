@@ -489,7 +489,29 @@ def bank_total_lgiven():
         s
         )
     return result
-
+def farmer_removing_land(lid):
+    s = "DELETE FROM farmerland WHERE lid='{}';".format(lid)
+    s1 = "DELETE FROM landcrop WHERE lid='{}';".format(lid)
+    getresult(s)
+    getresult(s1)
+def farmer_removing_crop(lid,cid):
+    s = "DELETE FROM landcrop WHERE lid='{}' and cid='{}';".format(lid,cid)
+    getresult(s)
+def shopvendor_removing_crop(svid,cid):
+    s = "DELETE FROM svcrop WHERE cid='{}' and svid={};".format(cid,svid)
+    getresult(s)
+def storage_removing_crop(sid,cid):
+    s = "DELETE FROM storagecrop WHERE sid='{}' and cid='{}';".formate(sid,cid)
+    getresult(s)
+def shopvendor_removing_item(item_name,svid):
+    s = "DELETE FROM shop_inv WHERE svid='{}' and item_name='{}';".format(svid,item_name)
+    getresult(s)
+def transporter_removing_crop(tid,cid):
+    s = "DELETE FROM transcrop WHERE tid='{}' and cid='{}';".format(tid,cid)
+    getresult(s)
+def storageprovider_removing_storage_loc(sid,spid):
+    s = "DELETE FROM transcrop WHERE sid='{}' and spid='{}';".format(sid,spid)
+    getresult(s)
 def check_banks():
     print("banks : 1 -> number of loans that have been given out")
     print(bank_no_loan_giv("B_101"))
