@@ -1,0 +1,91 @@
+{% extends "index.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block app_content %}
+<h1 class="text-center">Select Queries</h1>
+<div class="center-block">
+    {% if noofloangiven %}
+        {% if noofloangiven>0 %}
+        <h4 class="text-default">
+            The number of given loans are: {{noofloangiven}}
+        </h4>
+        {% endif %}
+    {% endif %}
+    {% if form1 %}
+    <form style="margin-top: 5em;" method=post action="">
+        {{ form1.hidden_tag() }}
+        <dl>
+            {{ render_field(form1.bid) }}
+            {{ render_field(form1.submit1) }}
+        </dl>
+    </form>
+    {% endif %}
+    {% if unique_rates %}
+        <h3>
+            Given unique rate offered from various banks are: 
+        </h3>
+        {% for unique_rate in unique_rates %}
+            <h4>
+                {{unique_rate[0]}}
+            </h4>
+        {% endfor %}
+    {% endif %}
+    {% if form2 %}
+    <form style="margin-top: 5em;" method=post action="">
+        {{ form2.hidden_tag() }}
+        <dl>
+            {{ render_field(form2.submit2) }}
+        </dl>
+    </form>
+    {% endif %}
+    {% if bank_number_of_online_tran %}
+        {% if bank_number_of_online_tran>0 %}
+        <h4 class="text-default">
+            The number of online transcations are: {{bank_number_of_online_tran}}
+        </h4>
+        {% endif %}
+    {% endif %}
+    {% if form3 %}
+    <form style="margin-top: 5em;" method=post action="">
+        {{ form3.hidden_tag() }}
+        <dl>
+            {{ render_field(form3.submit3) }}
+        </dl>
+    </form>
+    {% endif %}
+    
+    {% if pendingamountvalue %}
+        {% if pendingamountvalue>0 %}
+        <h4 class="text-default">
+            The pending amount value is: {{pendingamountvalue}}
+        </h4>
+        {% endif %}
+    {% endif %}
+    {% if form4 %}
+    <form style="margin-top: 5em;" method=post action="">
+        {{ form4.hidden_tag() }}
+        <dl>
+            {{ render_field(form4.bid) }}
+            {{ render_field(form4.submit4) }}
+        </dl>
+    </form>
+    {% endif %}
+
+    {% if bank_total_lgive %}
+        {% if bank_total_lgive>0 %}
+        <h4 class="text-default">
+            The total loan lend is: {{bank_total_lgive}}
+        </h4>
+        {% endif %}
+    {% endif %}
+
+    {% if form5 %}
+    <form style="margin-top: 5em;" method=post action="">
+        {{ form5.hidden_tag() }}
+        <dl>
+            {{ render_field(form5.submit5) }}
+        </dl>
+    </form>
+    {% endif %}
+
+</div>
+{% endblock %}

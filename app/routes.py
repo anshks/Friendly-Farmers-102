@@ -6,6 +6,10 @@ from flask import ( render_template,
                     flash, 
                     g )
 from app.forms import  (password,
+                        viewTotalLoanLend,
+                        viewPendingAmount,
+                        viewOnlineTranscarions,
+                        viewLoanBID,
                         authorize_storageprov,
                         authorize_farmer,
                         authorize_bank,
@@ -20,15 +24,17 @@ from app.forms import  (password,
                         AddShopInv,
                         AddStoragefac,
                         AddStorageProvider, 
+                        viewUniqueRateoffr,
                         AddTransporter, 
                         AddCrop, 
                         AddShopVendor, 
                         AddFarmer, 
-                        AddLand, 
-                        AddLectureForm, 
-                        AddExecutionForm, 
-                        AddExamForm)
-from app.query_helper import (update_authorized_storageprov, 
+                        AddLand)
+from app.query_helper import (bank_number_of_online_trans,
+                              bank_total_lgiven,
+                              farmer_available_lrates,
+                              bank_no_loan_giv,
+                              update_authorized_storageprov, 
                               update_shopinv_amount, 
                               update_authorized_farmer,
                               update_authorized_bank,
@@ -46,11 +52,12 @@ from app.query_helper import (update_authorized_storageprov,
                               bank_rateofff, 
                               query_db, 
                               insert, 
+                              bank_total_pending,
                               Pagination)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', enablecenter='home')
 
 @app.route('/statistics', methods=('GET', 'POST'))
 def stats():
@@ -313,6 +320,36 @@ def add_storage_provider():
 @app.route('/info', methods=('GET', 'POST'))
 def view_pre_info():
     return render_template('pre_info.html')
+
+@app.route('/select', methods=('GET', 'POST'))
+def view_select_queries():
+    form1, noofloangiven = viewLoanBID(), 0
+    if(form1.validate_on_submit() and form1.submit1.data):
+        flash("ID Checked: "+form1.bid.data)
+        noofloangiven= bank_no_loan_giv(form1.bid.data)[0][0]
+        print('--------------> Checked for the BID:', form1.bid.data)
+        print('--------------> Number of loans given are: ', noofloangiven)
+        return render_template('select.html', title="Select Queries", form1=form1, noofloangiven= noofloangiven)
+    form4, pendingamountvalue = viewPendingAmount(), 0
+    if(form4.validate_on_submit() and form4.submit4.data):
+        flash("ID Checked: "+form4.bid.data)
+        pendingamountvalue= bank_total_pending(form4.bid.data)[0][0]
+        print('--------------> Checked for the BID:', form4.bid.data)
+        print('--------------> The pending amount is: ', pendingamountvalue)
+        return render_template('select.html', title="Select Queries", form4=form4, pendingamountvalue= pendingamountvalue)
+    form2, unique_rates= viewUniqueRateoffr(), 0
+    if(form2.validate_on_submit() and form2.submit2.data):
+        unique_rates= farmer_available_lrates()
+        return render_template('select.html', title="Select Queries", form2=form2, unique_rates= unique_rates)
+    form3, bank_number_of_online_tran= viewOnlineTranscarions(), 0
+    if(form3.validate_on_submit() and form3.submit3.data):
+        bank_number_of_online_tran= bank_number_of_online_trans()[0][0]
+        return render_template('select.html', title="Select Queries", form3=form3, bank_number_of_online_tran= bank_number_of_online_tran)
+    form5, bank_total_lgive= viewTotalLoanLend(), 0
+    if(form5.validate_on_submit() and form5.submit5.data):
+        bank_total_lgive= bank_total_lgiven()[0][0]
+        return render_template('select.html', title="Select Queries", form5=form5, bank_total_lgive= bank_total_lgive)
+    return render_template('select.html', title="Select Queries", form1=form1, noofloangiven= noofloangiven, form2=form2, unique_rates= unique_rates, form3=form3, bank_number_of_online_tran= bank_number_of_online_tran, form4=form4, pendingamountvalue= pendingamountvalue, form5=form5, bank_total_lgive= bank_total_lgive)
 
 @app.route('/info/<string:page>', methods=('GET', 'POST'))
 def view_info(page):

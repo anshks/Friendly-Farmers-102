@@ -135,26 +135,20 @@ class Addtrans(FlaskForm):
     identity_from = StringField('identity of person from', validators=[DataRequired(), Length(1, 1024)])
     identity_to = StringField('identity of person to', validators=[DataRequired(), Length(1, 1024)])
     submit = SubmitField('Submit')
+    
+class viewLoanBID(FlaskForm):
+    bid= StringField('Bank ID', validators=[Length(1, 1024)])
+    submit1= SubmitField('Submit')
 
-class AddLectureForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(1, 1024)])
-    shortcut = StringField('Shortcut', validators=[DataRequired(), Length(1, 64)])
-    ects = IntegerField('ECTS', default=1, validators=[DataRequired()])
-    submit = SubmitField('Submit')
-    def validate_shortcut(self, shortcut):
-        if len(query_db("select * from lecture where shortcut= ? ", (shortcut.data,))) > 0:
-            raise ValidationError("Shortcut {} already exists!".format(shortcut.data))
+class viewUniqueRateoffr(FlaskForm):
+    submit2= SubmitField('View the unique loans offered from various banks')
 
-class AddExecutionForm(FlaskForm):
-    shortcut = SelectField('Shortcut', coerce=str, validators=[DataRequired()])
-    lecturer = StringField('Lecturer', validators=[DataRequired()])
-    semester = IntegerField('Semester', default=1, validators=[DataRequired()])
-    submit = SubmitField('Submit')
+class viewOnlineTranscarions(FlaskForm):
+    submit3= SubmitField('View number of online transcations')
 
-class AddExamForm(FlaskForm):
-    executions = SelectField('Execution', coerce=str, validators=[DataRequired()])
-    n_tries = IntegerField('Try', default=1, validators=[DataRequired()])
-    mark = IntegerField('Grade', validators=[DataRequired()])
-    degree = SelectField('Degree', default='b', choices=[('b', 'Bachelor'), ('m', 'Master')])
-    kind = SelectField('Kind', coerce=int, default=0, choices=[(0, 'written'), (1, 'oral')])
-    submit = SubmitField('Submit')
+class viewPendingAmount(FlaskForm):
+    bid= StringField('Bank ID', validators=[Length(1, 1024)])
+    submit4= SubmitField('View pending amount for the bank')
+
+class viewTotalLoanLend(FlaskForm):
+    submit5= SubmitField('View total amount of loan pending')

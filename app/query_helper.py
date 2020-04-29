@@ -400,9 +400,8 @@ def update_authorized_storageprov(val, sp_id):
     s = ('update storageprov set authorized = {} where spid = "{}"').format(val, sp_id)
     query_db(s)
 
-
 # Queries related to the stakeholders
-def farmer_nearby_crop_price(crop_name,lat,long):
+def farmer_nearby_crop_price(crop_name, lat, long):
     lat_max = lat + 20
     lat_min = lat - 20
     lon_min = long - 20
@@ -416,7 +415,7 @@ def farmer_nearby_crop_price(crop_name,lat,long):
 def farmer_available_lrates():
     return query_db("select distinct rateoffr from bank")
 
-def farmer_nearby_transport_fac(lat,long):
+def farmer_nearby_transport_fac(lat, long):
     lat_max = lat + 20
     lat_min = lat - 20
     lon_min = long - 20
@@ -427,7 +426,7 @@ def farmer_nearby_transport_fac(lat,long):
         )
     return result
 
-def farmer_nearby_storage_fac(lat,long):
+def farmer_nearby_storage_fac(lat, long):
     lat_max = lat + 20
     lat_min = lat - 20
     lon_min = long - 20
@@ -452,10 +451,8 @@ def check_farmer():
     print(farmer_nearby_storage_fac(20,70))
     print("done")
 
-
 def bank_no_loan_giv(BID):
     s = "select count(*) from bankfloan as l where l.bid='{}'".format(BID)
-    # print(s)
     result = query_db(
         s
         )
@@ -463,7 +460,6 @@ def bank_no_loan_giv(BID):
 
 def bank_number_of_online_trans():
     s = "select count(*) from transactions as t1 where t1.method='Online' "
-    # print(s)
     result = query_db(
         s
         )
@@ -481,7 +477,7 @@ def bank_rate_offr(lat,long):
     return result
 
 def bank_total_pending(BID):
-    s = ("select SUM(pendamt) from bankloan,loan where bankloan.bid='{}' and loan.lid=bankloan.lid").format(BID)
+    s = ("select SUM(loan.pendamt) from bankfloan, loan where bankfloan.bid='{}' and loan.lid=bankfloan.lid;").format(BID)
     result = query_db(
         s
         )
@@ -736,7 +732,6 @@ def get_lecturer_with_lowest_avg_mark():
 
     return best_lecturer
 
-
 def get_semester_with_lowest_avg_mark(title):
     best_semester = query_db(
         "select semester, avg(mark) from exam join lecture using(shortcut)"
@@ -745,7 +740,6 @@ def get_semester_with_lowest_avg_mark(title):
 
 def getresult(s):
     return query_db(s)
-
 
 def storage_provider_auth():
     s = ("select count(*) from storageprov where authorized=0")
@@ -847,6 +841,7 @@ def shop_inv(SVID):
         Xs.append(i[0])
     pieChart(Xs,Ys,"shopvendor_item_mean")
     return "shopvendor_item_mean_pie.png"
+
 def bank_rateofff(index):
     s = ("select bid from bank")
     res = getresult(s)
