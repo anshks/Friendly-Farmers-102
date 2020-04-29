@@ -13,6 +13,13 @@ import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 nom = Nominatim()
 
+def stdev_rate(bank_id):
+    s = ("select stdev(rateoffr) from bank where bid='{}'").format(bank_id)
+    return s
+def stdev_quantity(c_name):
+    s = ("select stdev(quantity) from crop where cname='{}'").format(c_name)
+    return s
+    
 def barGraph(X, Y, xLabel, yLabel,name):
     # X, Y -> list, xLabel,yLabel -> string
     plt.bar(X, Y, align='center', alpha=0.5)
@@ -821,6 +828,7 @@ def crop_price(index):
     ret = []
     for i in res:
         c_name = i[0]
+        s = stdev_quantity(c_name)
         add = []
         s = ("select sum(price) from crop where cname='{}'").format(c_name)
         res1 = getresult(s)
@@ -874,13 +882,13 @@ def shop_inv(SVID):
         Xs.append(i[0])
     pieChart(Xs,Ys,"shopvendor_item_mean")
     return "shopvendor_item_mean_pie.png"
-
 def bank_rateofff(index):
     s = ("select bid from bank")
     res = getresult(s)
     ret = []
     for i in res:
         bank_id = i[0]
+        s = stdev_rate(bank_id)
         add = []
         s = ("select sum(rateoffr) from bank where bid='{}'").format(bank_id)
         res1 = getresult(s)
