@@ -128,6 +128,17 @@ def init_db():
         #display yeha se shuru hai
 
 def create_the_databse():
+    query_db("CREATE INDEX IF NOT EXISTS idx_farmer ON farmer (fid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_land ON land (lid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_crop ON crop (cid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_shopvendor ON shopvendor (svid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_transporter ON transporter (tid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_storageprov ON storageprov (spid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_transactions ON transactions (transid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_bank ON bank (bid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_loan ON loan (lid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_storagefacloc ON storagefacloc (sid);")
+    query_db("CREATE INDEX IF NOT EXISTS idx_farmer ON farmer (fid);")
     insertintotrasaction()
     insertintoloan()
     printalltables('loan')
