@@ -73,7 +73,7 @@ further defined and clarified by project maintainers.
 ### Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at [INSERT EMAIL ADDRESS]. All
+reported by contacting the project team at all of the following: rishi18304@iiitd.ac.in, anunay18021@iiitd.ac.in, ruhma18362@iiitd.ac.in, ansh18130@iiitd.ac.in, mukul18296@iiitd.ac.in. All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
