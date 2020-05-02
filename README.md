@@ -1,7 +1,6 @@
 # Friendly Farmers 101      <img src="https://cdn.worldvectorlogo.com/logos/flask.svg" height="30"> 
 
 ## About this project
-<img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1800&q=80"> 
 
 ### The idea:
 To create a platform for the stakeholders involved at each stage of food production, i.e. from the production of agriculture produce to the sale of the final product in the market.

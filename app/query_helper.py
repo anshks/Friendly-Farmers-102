@@ -1,102 +1,9 @@
-import sqlite3, geopy, math
+import sqlite3, math
 from app import ( app )
-from flask import ( current_app, g )
 from math import ( ceil )
-from geopy.geocoders import ( Nominatim )
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.use('Agg')
-
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.use('Agg')
-nom = Nominatim()
-
-def stdev_rate(bank_id):
-    s = ("select stdev(rateoffr) from bank where bid='{}'").format(bank_id)
-    return s
-def stdev_quantity(c_name):
-    s = ("select stdev(quantity) from crop where cname='{}'").format(c_name)
-    return s
-    
-def barGraph(X, Y, xLabel, yLabel,name):
-    # X, Y -> list, xLabel,yLabel -> string
-    plt.bar(X, Y, align='center', alpha=0.5)
-    plt.xticks(X)
-    plt.ylabel(xLabel)
-    plt.title(yLabel)
-    plt.savefig('./app/static/'+name+"_bar.png")
-    plt.close()
-
-def pieChart(labels, sizes,name):
-    # labels, sizes -> list
-    patches, texts = plt.pie(sizes)
-    plt.legend(patches, labels, loc="best")
-    plt.axis('equal')
-    plt.tight_layout()
-    plt.savefig('./app/static/'+name+"_pie.png")
-    plt.close()
-def address_to_latlong(address):
-	result = nom.geocode(address)
-	lat = result.latitude
-	long = result.longitude
-	return [lat, long]
-
-def latlong_to_address(lat,long):
-	address = nom.reverse(str(lat) + ',' + str(long))
-	return address
-
-# Basic database helper methods, helper methods
-# Establishing connection with db
-def get_db():
-    """
-    get database connection
-    """
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(current_app.config['DATABASE_PATH'])
-    return db
-
-# Executing queries
-def query_db(query, args=(), one=False):
-    """
-    execute a database query
-    :param query: query string
-    :param args: optional query arguments
-    :param one: limit result to 1
-    :return: query result
-    """
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-# Inserting queries
-def insert(table, fields=(), values=()):
-    """
-    insert new row into an existing table
-    :param table: target table
-    :param fields: field names
-    :param values: row values
-    :return: id of the newly created row
-    """
-    # g.db is the database connection
-    db = get_db()
-    cur = db.cursor()
-    query = 'INSERT INTO %s (%s) VALUES (%s)' % (
-        table,
-        ', '.join(fields),
-        ', '.join(['?'] * len(values))
-    )
-    print(query,values)
-    print('Executing insert query for', table)
-    cur.execute(query, values)
-    db.commit()
-    id = cur.lastrowid
-    cur.close()
-    print('Inserted for the', table, ', the following: ', values)
-    return id
+from app.database import (get_db, query_db, insert)
+from app.geocoding import (address_to_latlong, latlong_to_address)
+from app.plot import (barGraph, pieChart, stdev_quantity, stdev_rate)
 
 # Initiliaze the database
 def init_db():
@@ -191,46 +98,11 @@ def create_the_databse():
     printalltables('spstorage')
     printalltables('storagecrop')
 
-# pagination
-
-class Pagination:
-
-    def __init__(self, page: int, total_count: int, per_page: int = None):
-        self.page = page
-        self.total_count = total_count
-        conf_per_page = current_app.config['PER_PAGE'] if current_app.config['PER_PAGE'] is not None else 15
-        self.per_page = conf_per_page if per_page is None else per_page
-
-    @property
-    def pages(self) -> int:
-        return int(ceil(self.total_count / float(self.per_page)))
-
-    @property
-    def has_prev(self) -> bool:
-        return self.page > 1
-
-    @property
-    def has_next(self) -> bool:
-        return True if self.page < self.pages else False
-
-    def iter(self, left_edge=2, left_current=2, right_current=5, right_edge=2):
-        last = 0
-        for num in range(1, self.pages + 1):
-            if num <= left_edge or (num > self.page - left_current - 1):
-                if num < self.page + right_current or num > self.pages - right_edge:
-                    if last + 1 != num:
-                        yield None
-                    yield num
-                    last = num
-
-# special queries
-
 # Print Table Query
 def printalltables(table):
     alltables= query_db("Select * from "+table)
     print(alltables)
     return alltables
-
 
 # Insert Queries
 def insertintotrasaction():
@@ -356,68 +228,6 @@ def insertintostoragecrop():
     insert('storagecrop', ('sid', 'cid'), ('S_132', 'C_102'))
     insert('storagecrop', ('sid', 'cid'), ('S_123', 'C_103'))
 
-
-# Update Queries
-def update_authorized_farmer(val, farmer_id):
-    s = ('update farmer set authorized = {} where fid = "{}"').format(val, farmer_id)
-    query_db(s)
-
-def update_contact_farmer(contact_no, farmer_id):
-    s= ('update farmer set fcontact={} where fid ="{}"').format(contact_no, farmer_id)
-    query_db(s)
-
-def update_shopinv_amount(units,svid,item_name):
-    quant = units
-    s = ('select units from shop_inv where svid ="{}" and item_name="{}"').format(svid,item_name)
-    res = query_db(s)
-    quant += res[0][0]
-    s= ('update shop_inv set item_units={} where svid ="{}" and item_name="{}"').format(quant,svid,item_name)
-    query_db(s)
-
-def  update_authorized_bank(val, bank_id):
-    s = ('update bank set authorized = {} where bid = "{}"').format(val, bank_id)
-    query_db(s)
-
-def update_rateoffr_bank(rate, bank_id):
-    s = ('update bank set rateoffr = {} where bid = "{}"').format(rate, bank_id)
-    query_db(s)
-
-def update_authorized_transporter(val, transporter_id):
-    s = ('update transporter set authorized = {} where tid = "{}"').format(val, transporter_id)
-    query_db(s)
-
-def update_resavl_transporter(resval_val, transporter_id):
-    s = ('update transporter set resavl ={} where tid = "{}"').format(resval_val, transporter_id)
-    query_db(s)
-
-def update_mintht_maxtht( transporter_id, mintht1=0, maxtht1=0 ):
-    s = ('update transporter set mintwht={}, maxtwht = {} where tid = "{}"').format(mintht1, maxtht1, transporter_id)
-    query_db(s)
-
-def update_price_transporter(p1, transporter_id):
-    s = ('update transporter set price = {} where tid = "{}"').format(p1, transporter_id)
-    query_db(s)
-
-def update_authorized_shopvendor(val, sv_id):
-    s = ('update shopvendor set authorized = {} where svid = "{}"').format(val, sv_id)
-    query_db(s)
-
-def update_lat_long_shopvendor(lat_a, long_a, sv_id):
-    s = ('update shopvendor set lat = {}, long = {} where svid = "{}"').format(lat_a, long_a, sv_id)
-    query_db(s)
-
-def update_price_shopvendor(price1, crop_id):
-    s = ( 'update crop set price = {} where cid = "{}"').format(price1, crop_id)
-    query_db(s)
-
-def update_item_price(item_price_val, shop_inv_id):
-    s = ('update shop_inv set item_price = {} where svid = "{}"').format(item_price_val, shop_inv_id)
-    query_db(s)
-
-def update_authorized_storageprov(val, sp_id):
-    s = ('update storageprov set authorized = {} where spid = "{}"').format(val, sp_id)
-    query_db(s)
-
 # Queries related to the stakeholders
 def farmer_nearby_crop_price(crop_name, lat, long):
     lat_max = lat + 20
@@ -425,9 +235,7 @@ def farmer_nearby_crop_price(crop_name, lat, long):
     lon_min = long - 20
     lon_max = long + 20
     s = ("select price from crop where cname='{}' and cid in (select cid from landcrop where lid in (select lid from land as L where L.lat between {} AND {} and L.long between {} and {}))").format(crop_name,lat_min,lat_max,lon_min,lon_max)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def farmer_available_lrates():
@@ -439,9 +247,7 @@ def farmer_nearby_transport_fac(lat, long):
     lon_min = long - 20
     lon_max = long + 20
     s = ("select * from transporter where transporter.lat between {} and {} and transporter.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def farmer_nearby_storage_fac(lat, long):
@@ -450,9 +256,7 @@ def farmer_nearby_storage_fac(lat, long):
     lon_min = long - 20
     lon_max = long + 20
     s = ("select * from storagefacloc as D where D.lat between {} and {} and D.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def check_farmer():
@@ -471,16 +275,12 @@ def check_farmer():
 
 def bank_no_loan_giv(BID):
     s = "select count(*) from bankfloan as l where l.bid='{}'".format(BID)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def bank_number_of_online_trans():
     s = "select count(*) from transactions as t1 where t1.method='Online' "
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def bank_rate_offr(lat,long):
@@ -489,23 +289,17 @@ def bank_rate_offr(lat,long):
     lon_min = long - 20
     lon_max = long + 20
     s = ("select bank.rateoffr from bank where bank.lat between {} and {} and bank.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def bank_total_pending(BID):
     s = ("select SUM(loan.pendamt) from bankfloan, loan where bankfloan.bid='{}' and loan.lid=bankfloan.lid;").format(BID)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def bank_total_lgiven():
     s = "select SUM(iniamt) from loan;"
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 def farmer_removing_land(lid):
     s = "DELETE FROM farmerland WHERE lid='{}';".format(lid)
@@ -549,30 +343,22 @@ def check_banks():
 
 def trans_check_auth_req(TID):
     s = ("select authorized from transporter as T where  T.tid ='{}'").format(TID)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def trans_prices_offer(weight):
     s = ("select tid,Price*{} from (SELECT tid,Price from transporter where mintwht <= {} and maxtwht >= {})").format(weight,weight,weight)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def trans_resources_left(tname):
     s = ("select SUM(resavl) from transporter as A where A.tname='{}'").format(tname)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def trans_res_wieght_transport(TID):
     s = ("select maxtwht from transporter as A where A.tid='{}'").format(TID)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def check_transporter():
@@ -598,16 +384,12 @@ def shopvend_priceofcrop_in_mylocality(crop_name,lat,long):
     lon_min = long - 20
     lon_max = long + 20
     s = ("select item_price from shop_inv where item_name='{}' and svid in ( select svid from shopvendor as A where A.lat between {} and {} and A.long between {} and {})").format(crop_name,lat_min,lat_max,lon_min,lon_max)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def shopvend_check_auth(SVID):
     s = ("select authorized from shopvendor where svid='{}'").format(SVID)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def shopvend_rates_nearby_forloan(lat,long):
@@ -617,16 +399,12 @@ def shopvend_rates_nearby_forloan(lat,long):
     lon_max = long + 20
     s = ("Select bank.rateoffr from bank where bank.lat between {} and {} and bank.long between {} and {}").format(lat_min,lat_max,lon_min,lon_max)
 
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def shopvend_inv(SVID):
     s = ("select * from shop_inv where shop_inv.svid='{}'").format(SVID)
-    result = query_db(
-        s
-        )
+    result = query_db(s)
     return result
 
 def count_nonauth(name):
@@ -707,27 +485,19 @@ def return_latlong_fromid(id= ''):
     try:
         if id.find('F_')!=-1:
             s = ("select A.lat, A.long from farmer as A where A.fid='{}'").format(id)
-            result = query_db(
-                s
-                )
+            result = query_db(s)
             return result
         elif id.find('LD_')!=-1:
             s = ("select A.lat, A.long from land as A where A.lid='{}'").format(id)
-            result = query_db(
-                s
-                )
+            result = query_db(s)
             return result
         elif id.find('SV_')!=-1:
             s = ("select A.lat, A.long from shopvendor as A where A.svid='{}'").format(id)
-            result = query_db(
-                s
-                )
+            result = query_db(s)
             return result
         elif id.find('SP_')!=-1:
             s = ("select A.lat, A.long from storageprov as A where A.spid='{}'").format(id)
-            result = query_db(
-                s
-                )
+            result = query_db(s)
             return result
     except Exception as e:
         print(e)
@@ -751,32 +521,6 @@ def trans_dist(idA= '', idB= ''):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = R*c
     return d
-
-def get_avg_mark_per_degree():
-    """
-    Get weighted average mark across all exams that belong to a specific degree.
-    """
-    avg_mark_per_degree = query_db(
-        "select degree, round((sum(mark * ects) * 1.0) / sum(ects), 1) from exam "
-        "join lecture using (shortcut) group by degree")
-    return avg_mark_per_degree
-
-def get_lecturer_with_lowest_avg_mark():
-    """
-    Get lecturer with best (=lowest) average marks.
-    """
-    best_lecturer = query_db(
-        "select lecturer, min(average) from execution join "
-        "(select shortcut, avg(mark) as average from exam group by shortcut) temp "
-        "using(shortcut);")
-
-    return best_lecturer
-
-def get_semester_with_lowest_avg_mark(title):
-    best_semester = query_db(
-        "select semester, avg(mark) from exam join lecture using(shortcut)"
-        "where lecture.name =? group by semester limit 1;", [title])
-    return best_semester
 
 def getresult(s):
     return query_db(s)
@@ -882,6 +626,7 @@ def shop_inv(SVID):
         Xs.append(i[0])
     pieChart(Xs,Ys,"shopvendor_item_mean")
     return "shopvendor_item_mean_pie.png"
+
 def bank_rateofff(index):
     s = ("select bid from bank")
     res = getresult(s)

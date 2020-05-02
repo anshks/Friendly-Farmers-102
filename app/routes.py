@@ -1,10 +1,12 @@
-from app import ( app, )
 import random
-from flask import ( render_template, 
-                    redirect, 
-                    url_for, 
-                    flash, 
-                    g )
+from flask import ( 
+    render_template, 
+    redirect, 
+    url_for, 
+    flash, 
+    g )
+from app import ( app, )
+from app.database import (query_db, insert)
 from app.forms import  (password,
                         viewTotalLoanLend,
                         viewPendingAmount,
@@ -34,31 +36,31 @@ from app.query_helper import (bank_number_of_online_trans,
                               bank_total_lgiven,
                               farmer_available_lrates,
                               bank_no_loan_giv,
-                              update_authorized_storageprov, 
-                              update_shopinv_amount, 
-                              update_authorized_farmer,
-                              update_authorized_bank,
-                              update_authorized_transporter,
-                              update_authorized_shopvendor,
-                              update_authorized_shopvendor,
-                              update_rateoffr_bank,
-                              update_price_transporter,
-                              update_price_shopvendor,
                               shop_inv, 
                               storage_provider_auth, 
                               shopvendor_auth, 
                               crop_sum, 
                               crop_price, 
                               bank_rateofff, 
-                              query_db, 
-                              insert, 
-                              bank_total_pending,
-                              Pagination)
+                              bank_total_pending)
+from app.update import (
+    update_authorized_storageprov, 
+    update_shopinv_amount, 
+    update_authorized_farmer,
+    update_authorized_bank,
+    update_authorized_transporter,
+    update_authorized_shopvendor,
+    update_rateoffr_bank,
+    update_price_transporter,
+    update_price_shopvendor,
+)
 
+# Creating the index route
 @app.route('/')
 def index():
     return render_template('index.html', enablecenter='home')
 
+# Displaying statistics
 @app.route('/statistics', methods=('GET', 'POST'))
 def stats():
     bank= []
@@ -184,54 +186,42 @@ def update_queries():
     form5 = price_transporter()
     form6 = item_price()
     form7 = authorize_storageprov()
-
     if(form.validate_on_submit() and form.submit1.data):
         update_authorized_farmer(1,form.fid.data)
         flash("Successfully Changed Farmer")
         print(form.fid.data)
         return redirect(url_for('update_queries'))
-    
-    if(form1.validate_on_submit() and form1.submit2.data):
+    elif(form1.validate_on_submit() and form1.submit2.data):
         update_authorized_bank(1,form1.bid.data)
         flash("Successfully Changed Bank")
         print(form1.bid.data)
         return redirect(url_for('update_queries'))
-    
-    if(form2.validate_on_submit() and form2.submit3.data):
+    elif(form2.validate_on_submit() and form2.submit3.data):
         update_authorized_transporter(1,form2.transid.data)
         flash("Successfully Changed Transporter")
         print(form2.transid.data)
         return redirect(url_for('update_queries'))
-    
-    if(form3.validate_on_submit() and form3.submit4.data):
+    elif(form3.validate_on_submit() and form3.submit4.data):
         update_authorized_shopvendor(1,form3.svid.data)
         flash("Successfully Changed Shop Vendor")
         print(form3.svid.data)
         return redirect(url_for('update_queries'))
-    
-    if(form4.validate_on_submit() and form4.submit5.data):
+    elif(form4.validate_on_submit() and form4.submit5.data):
         update_rateoffr_bank(float(form4.rateoffr.data),form4.bid.data)
         flash("Successfully Changed Bank")
         print(float(form4.rateoffr.data),form4.bid.data)
         return redirect(url_for('update_queries'))
-    
-    if(form5.validate_on_submit() and form5.submit6.data):
+    elif(form5.validate_on_submit() and form5.submit6.data):
         update_price_transporter(float(form5.price.data),form5.transid.data)
-        flash("Successfully Changed Transporter")
+        flash("Successfully Changed the price of the Transporter")
         print(float(form5.price.data),form5.transid.data)
         return redirect(url_for('update_queries'))
-    
-    if(form6.validate_on_submit() and form6.submit7.data):
-        update_price_shopvendor(float(form6.price.data),form6.cropid.data)
-        flash("Successfully Changed Shopvendor")
-        return redirect(url_for('update_queries'))
-    
-    if(form7.validate_on_submit() and form7.submit8.data):
+    elif(form7.validate_on_submit() and form7.submit8.data):
         update_authorized_storageprov(1,form7.spid.data)
         flash("Successfully Changed Storage Provider")
         print(form7.spid.data)
         return redirect(url_for('update_queries'))
-    return render_template('gov.html',title="Shop Inventory",form=form,form1=form1,form2=form2,form3=form3,form4=form4,form5=form5,form6=form6,form7=form7)
+    return render_template('gov.html',title="Government Portal",form=form,form1=form1,form2=form2,form3=form3,form4=form4,form5=form5,form6=form6,form7=form7)
 
 @app.route('/addloan',methods=('GET','POST'))
 def add_loan():
@@ -316,10 +306,19 @@ def add_storage_provider():
     print('Total records before loading storageprov: ', store_length[0][0])
     return render_template('storageprov.html', title="Storageprov", form=form)
 
-
+# Helper page: (Generating links for the link/<string:page>)
 @app.route('/info', methods=('GET', 'POST'))
 def view_pre_info():
     return render_template('pre_info.html')
+
+@app.route('/info/<string:page>', methods=('GET', 'POST'))
+def view_info(page):
+    all_values = query_db("select * from {}".format(page))
+    total_count = query_db("select COUNT(*) from {}".format(page))[0][0]
+    print('--------------> Display info for:', page)
+    print('--------------> Total values are:', all_values)
+    print('--------------> Total data is:', total_count)
+    return render_template('info.html', display= all_values, name_of_table= page)
 
 @app.route('/select', methods=('GET', 'POST'))
 def view_select_queries():
@@ -351,16 +350,7 @@ def view_select_queries():
         return render_template('select.html', title="Select Queries", form5=form5, bank_total_lgive= bank_total_lgive)
     return render_template('select.html', title="Select Queries", form1=form1, noofloangiven= noofloangiven, form2=form2, unique_rates= unique_rates, form3=form3, bank_number_of_online_tran= bank_number_of_online_tran, form4=form4, pendingamountvalue= pendingamountvalue, form5=form5, bank_total_lgive= bank_total_lgive)
 
-@app.route('/info/<string:page>', methods=('GET', 'POST'))
-def view_info(page):
-    all_values = query_db("select * from '{}'".format(page))
-    total_count = query_db("select COUNT(*) from '{}'".format(page))[0][0]
-    print('--------------> Display info for:', page)
-    print('--------------> Total values are:', all_values)
-    print('--------------> Total data is:', total_count)
-    return render_template('info.html', display= all_values, name_of_table= page)
-
-# administration
+# Closing the db in case connection is lost 
 @app.teardown_appcontext
 def close_connection(exception):
     """
@@ -370,6 +360,7 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+#Setting the headers
 @app.after_request
 def add_header(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
